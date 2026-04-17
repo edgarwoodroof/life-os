@@ -687,6 +687,23 @@
             border-color: var(--danger);
         }
 
+        .manage-tags-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: var(--text-dim);
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .manage-tags-btn:hover {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
         /* Notes Panel */
         .notes-panel {
             display: flex;
@@ -1062,6 +1079,76 @@
             box-shadow: 0 0 20px var(--primary-glow);
         }
 
+        .tags-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tag-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .tag-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .tag-delete {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .tag-delete:hover {
+            color: var(--danger);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .add-tag-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .add-tag-wrapper input[type="color"] {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: var(--glass);
+        }
+
+        .add-tag-wrapper .location-modal-input {
+            flex: 1;
+        }
+
+        .add-tag-wrapper .location-modal-btn {
+            width: auto;
+            padding: 12px 20px;
+        }
+
         /* Responsive */
         @media (max-width: 1100px) {
             .dashboard {
@@ -1174,6 +1261,7 @@
                 <div class="panel todo-panel">
                     <div class="panel-header">
                         <div class="panel-title">Tasks</div>
+                        <button class="manage-tags-btn" id="manageTagsBtn">+ Tag</button>
                     </div>
                     <div class="todo-input-wrapper">
                         <input type="text" class="todo-input" id="todoInput" placeholder="Add a new task...">
@@ -1185,11 +1273,8 @@
                         </select>
                         <button class="todo-add-btn" id="todoAddBtn">+</button>
                     </div>
-                    <div class="todo-filters">
+                    <div class="todo-filters" id="todoFilters">
                         <button class="todo-filter-btn active" data-filter="all">All</button>
-                        <button class="todo-filter-btn" data-filter="work">Work</button>
-                        <button class="todo-filter-btn" data-filter="personal">Personal</button>
-                        <button class="todo-filter-btn" data-filter="urgent">Urgent</button>
                     </div>
                     <div class="todo-list-container" id="todoList"></div>
                     <div class="todo-footer">
@@ -1249,6 +1334,22 @@
         </div>
     </div>
 
+    <!-- Manage Tags Modal -->
+    <div class="location-modal" id="tagsModal">
+        <div class="location-modal-content">
+            <div class="location-modal-title">Manage Tags</div>
+            <div class="tags-list" id="tagsList"></div>
+            <div class="add-tag-wrapper">
+                <input type="text" class="location-modal-input" id="newTagInput" placeholder="New tag name...">
+                <input type="color" id="newTagColor" value="#5ca8ff">
+                <button class="location-modal-btn primary" id="addTagBtn">Add</button>
+            </div>
+            <div class="location-modal-buttons">
+                <button class="location-modal-btn" id="tagsCloseBtn">Done</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Location Modal -->
     <div class="location-modal" id="locationModal">
         <div class="location-modal-content">
@@ -1269,6 +1370,11 @@
         // State
         let todos = JSON.parse(localStorage.getItem('todos')) || [];
         let notes = localStorage.getItem('notes') || '';
+        let customTags = JSON.parse(localStorage.getItem('customTags')) || [
+            { name: 'work', color: '#5ca8ff' },
+            { name: 'personal', color: '#ff6b9d' },
+            { name: 'urgent', color: '#ff6b6b' }
+        ];
         let currentFilter = 'all';
         let rainEnabled = localStorage.getItem('rainEnabled') === 'true';
         let audioEnabled = localStorage.getItem('audioEnabled') === 'true';
@@ -1289,6 +1395,64 @@
             temp: 15,
             condition: 'rainy'
         };
+
+        // Tag management
+        function saveTags() {
+            localStorage.setItem('customTags', JSON.stringify(customTags));
+        }
+
+        function renderTagsList() {
+            const tagsList = document.getElementById('tagsList');
+            tagsList.innerHTML = customTags.map((tag, index) => `
+                <div class="tag-item">
+                    <div class="tag-name">
+                        <span class="tag-color-dot" style="background: ${tag.color}"></span>
+                        ${escapeHtml(tag.name)}
+                    </div>
+                    <button class="tag-delete" data-index="${index}">×</button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.tag-delete').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    customTags.splice(parseInt(btn.dataset.index), 1);
+                    saveTags();
+                    renderTagsList();
+                    updateCategorySelect();
+                });
+            });
+        }
+
+        function updateCategorySelect() {
+            const select = document.getElementById('categorySelect');
+            select.innerHTML = '<option value="">Tag</option>' +
+                customTags.map(tag => `<option value="${tag.name}">${tag.name}</option>`).join('');
+        }
+
+        function addTag() {
+            const input = document.getElementById('newTagInput');
+            const colorPicker = document.getElementById('newTagColor');
+            const name = input.value.trim().toLowerCase();
+            if (!name) return;
+            if (customTags.some(t => t.name === name)) return;
+            customTags.push({ name, color: colorPicker.value });
+            input.value = '';
+            saveTags();
+            renderTagsList();
+            updateCategorySelect();
+        }
+
+        document.getElementById('manageTagsBtn').addEventListener('click', () => {
+            renderTagsList();
+            document.getElementById('tagsModal').classList.add('active');
+        });
+        document.getElementById('tagsCloseBtn').addEventListener('click', () => {
+            document.getElementById('tagsModal').classList.remove('active');
+        });
+        document.getElementById('addTagBtn').addEventListener('click', addTag);
+        document.getElementById('newTagInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTag();
+        });
 
         // Initialize particles
         function createParticles() {
@@ -1539,6 +1703,11 @@
         });
 
         // To-Do List
+        function getTagColor(tagName) {
+            const tag = customTags.find(t => t.name === tagName);
+            return tag ? tag.color : '#888';
+        }
+
         function renderTodos() {
             const todoList = document.getElementById('todoList');
             
@@ -1555,16 +1724,19 @@
                     </div>
                 `;
             } else {
-                todoList.innerHTML = filtered.map((todo, index) => `
-                    <div class="todo-item ${todo.completed ? 'completed' : ''}">
-                        <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" data-index="${index}"></div>
-                        <div class="todo-content">
-                            <div class="todo-text">${escapeHtml(todo.text)}</div>
-                            ${todo.category ? `<div class="todo-meta"><span class="todo-category ${todo.category}">${todo.category}</span></div>` : ''}
+                todoList.innerHTML = filtered.map((todo, index) => {
+                    const tagColor = getTagColor(todo.category);
+                    return `
+                        <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                            <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" data-index="${index}"></div>
+                            <div class="todo-content">
+                                <div class="todo-text">${escapeHtml(todo.text)}</div>
+                                ${todo.category ? `<div class="todo-meta"><span class="todo-category" style="background: ${tagColor}20; color: ${tagColor}">${todo.category}</span></div>` : ''}
+                            </div>
+                            <button class="todo-delete-btn" data-index="${index}">×</button>
                         </div>
-                        <button class="todo-delete-btn" data-index="${index}">×</button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
                 // Add event listeners
                 document.querySelectorAll('.todo-checkbox').forEach(cb => {
@@ -1637,14 +1809,25 @@
             if (e.key === 'Enter') addTodo();
         });
 
-        document.querySelectorAll('.todo-filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.todo-filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                renderTodos();
+        function renderFilters() {
+            const filtersContainer = document.getElementById('todoFilters');
+            filtersContainer.innerHTML = '<button class="todo-filter-btn active" data-filter="all">All</button>' +
+                customTags.map(tag => `
+                    <button class="todo-filter-btn" data-filter="${tag.name}">${tag.name}</button>
+                `).join('');
+            
+            document.querySelectorAll('.todo-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.todo-filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderTodos();
+                });
             });
-        });
+        }
+
+        renderFilters();
+        updateCategorySelect();
 
         document.getElementById('clearCompletedBtn').addEventListener('click', () => {
             todos = todos.filter(t => !t.completed);
@@ -1733,10 +1916,16 @@
             createParticles();
         });
 
-        // Click outside modal
+        // Click outside modals
         locationModal.addEventListener('click', (e) => {
             if (e.target === locationModal) {
                 locationModal.classList.remove('active');
+            }
+        });
+
+        document.getElementById('tagsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'tagsModal') {
+                document.getElementById('tagsModal').classList.remove('active');
             }
         });
     </script>
