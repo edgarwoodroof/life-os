@@ -6,7 +6,7 @@
     <title>Life OS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0f0f1a;
@@ -24,7 +24,6 @@
             --success: #6bcf6b;
             --accent-blue: #5ca8ff;
             --accent-pink: #ff6b9d;
-            --panel-gap: 16px;
             --font-main: 'Outfit', sans-serif;
         }
 
@@ -72,8 +71,13 @@
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1.5fr 1fr;
-            gap: var(--panel-gap);
-            align-items: start;
+            gap: 20px;
+        }
+
+        .col-left, .col-main, .col-right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .panel {
@@ -83,16 +87,11 @@
             border-radius: 20px;
             padding: 20px;
             transition: all 0.3s ease;
-            height: 100%;
         }
 
-        .panel.size-1 { min-height: 200px; }
-        .panel.size-2 { min-height: 340px; }
-        .panel.size-3 { min-height: 520px; }
-
-        .panel.drag-over {
-            border-color: var(--primary);
-            box-shadow: 0 0 30px var(--primary-glow);
+        .panel:hover {
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
         }
 
         .panel-header {
@@ -100,7 +99,6 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
-            cursor: grab;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--glass-border);
         }
@@ -202,7 +200,7 @@
         .ambient-btns {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .ambient-btn {
@@ -253,11 +251,6 @@
         .ambient-btn.active .ambient-toggle::after { left: 18px; background: white; }
 
         /* Calendar */
-        .calendar {
-            margin-top: 16px;
-            flex: 1;
-        }
-
         .calendar-nav {
             display: flex;
             align-items: center;
@@ -309,46 +302,163 @@
         }
 
         .calendar-day:hover { background: var(--glass-hover); }
-
         .calendar-day.other-month { opacity: 0.3; }
+        .calendar-day.today { background: var(--primary); color: var(--bg); font-weight: 600; }
+        .calendar-day.selected { background: var(--primary); color: var(--bg); }
+        .calendar-day.has-event { box-shadow: inset 0 0 0 2px var(--primary); }
 
-        .calendar-day.today {
-            background: var(--primary);
-            color: var(--bg);
-            font-weight: 600;
+        /* Pomodoro */
+        .pomodoro-display {
+            text-align: center;
+            margin: 20px 0;
         }
 
-        .calendar-day.has-event {
-            box-shadow: inset 0 0 0 2px var(--primary);
+        .pomodoro-time {
+            font-size: 56px;
+            font-weight: 300;
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
         }
 
-        .calendar-day.selected {
-            background: var(--primary);
-            color: var(--bg);
+        .pomodoro-time.break { color: var(--accent-blue); }
+        .pomodoro-time.focus { color: var(--primary); }
+
+        .pomodoro-status {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 8px;
         }
 
-        .calendar-events {
-            margin-top: 12px;
-            max-height: 100px;
+        .pomodoro-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .pomodoro-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: var(--text);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pomodoro-btn:hover { background: var(--glass-hover); }
+        .pomodoro-btn.primary { background: var(--primary); color: var(--bg); }
+
+        .pomodoro-settings {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .pomodoro-setting {
+            text-align: center;
+        }
+
+        .pomodoro-setting label {
+            font-size: 10px;
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .pomodoro-setting input {
+            width: 40px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 4px;
+            padding: 4px;
+            color: var(--text);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Links */
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 180px;
             overflow-y: auto;
         }
 
-        .calendar-event {
+        .link-item {
             display: flex;
             align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .link-item:hover {
+            background: var(--glass-hover);
+            border-color: var(--primary);
+        }
+
+        .link-icon {
+            font-size: 16px;
+        }
+
+        .link-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .link-x {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+        }
+
+        .link-item:hover .link-x { opacity: 1; }
+        .link-x:hover { color: var(--danger); }
+
+        .link-input-row {
+            display: flex;
             gap: 8px;
-            padding: 8px 10px;
+            margin-top: 12px;
+        }
+
+        .link-input {
+            flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
-            margin-bottom: 4px;
+            padding: 10px 12px;
+            color: var(--text);
             font-size: 12px;
+            outline: none;
         }
 
-        .calendar-event-time {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 10px;
-            color: var(--primary);
+        .link-input:focus { border-color: var(--primary); }
+
+        .link-add-btn {
+            width: 36px;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg);
+            font-size: 14px;
+            cursor: pointer;
         }
 
         /* Tasks */
@@ -421,6 +531,7 @@
             flex-direction: column;
             gap: 8px;
             min-height: 100px;
+            max-height: 200px;
         }
 
         .task-item {
@@ -446,16 +557,8 @@
             justify-content: center;
         }
 
-        .task-check.checked {
-            background: var(--success);
-            border-color: var(--success);
-        }
-
-        .task-check.checked::after {
-            content: '✓';
-            color: white;
-            font-size: 11px;
-        }
+        .task-check.checked { background: var(--success); border-color: var(--success); }
+        .task-check.checked::after { content: '✓'; color: white; font-size: 11px; }
 
         .task-text { flex: 1; font-size: 13px; }
         .task-item.done .task-text { text-decoration: line-through; color: var(--text-dim); }
@@ -523,16 +626,8 @@
 
         .weather-details { flex: 1; }
 
-        .weather-temp {
-            font-size: 36px;
-            font-weight: 300;
-        }
-
-        .weather-temp-f {
-            font-size: 13px;
-            color: var(--text-dim);
-        }
-
+        .weather-temp { font-size: 36px; font-weight: 300; }
+        .weather-temp-f { font-size: 13px; color: var(--text-dim); }
         .weather-con { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 
         .weather-loc {
@@ -573,7 +668,7 @@
         /* Notes */
         .notes-area {
             flex: 1;
-            min-height: 100px;
+            min-height: 80px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
@@ -597,20 +692,10 @@
             gap: 6px;
         }
 
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--success);
-            border-radius: 50%;
-        }
+        .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
 
         /* Rain */
-        .rain-container {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: -1;
-        }
+        .rain-container { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
 
         .raindrop {
             position: absolute;
@@ -653,7 +738,6 @@
         }
 
         .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
-
         .modal-input {
             width: 100%;
             background: var(--glass);
@@ -667,7 +751,6 @@
         }
 
         .modal-input:focus { border-color: var(--primary); }
-
         .modal-btns { display: flex; gap: 8px; }
 
         .modal-btn {
@@ -683,9 +766,10 @@
 
         .modal-btn:hover { background: var(--glass-hover); }
         .modal-btn.primary { background: var(--primary); color: var(--bg); }
+        .modal-btn.danger { background: var(--danger); color: white; border-color: var(--danger); }
 
         /* Tags */
-        .tags-list { max-height: 120px; overflow-y: auto; margin-bottom: 10px; }
+        .tags-list { max-height: 100px; overflow-y: auto; margin-bottom: 10px; }
 
         .tag-item {
             display: flex;
@@ -706,91 +790,35 @@
         }
 
         .tag-color { width: 10px; height: 10px; border-radius: 50%; }
-
-        .tag-x {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-size: 12px;
-        }
-
+        .tag-x { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 12px; }
         .tag-x:hover { color: var(--danger); }
 
-        .add-tag-row {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-
-        .add-tag-row input[type="color"] {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
+        .add-tag-row { display: flex; gap: 6px; margin-bottom: 10px; }
+        .add-tag-row input[type="color"] { width: 40px; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
         .add-tag-row .modal-input { margin-bottom: 0; }
 
         /* Theme */
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .theme-box {
-            aspect-ratio: 1;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
+        .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .theme-box { aspect-ratio: 1; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
         .theme-box:hover { transform: scale(1.1); }
         .theme-box.active { border-color: var(--text); }
 
         .settings-option { margin-bottom: 14px; }
+        .settings-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 
-        .settings-label {
-            font-size: 10px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .size-btns { display: flex; gap: 6px; }
-        .size-btn {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 6px;
-            padding: 8px;
-            color: var(--text-dim);
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .size-btn:hover, .size-btn.active { background: var(--primary); color: var(--bg); }
-
-        /* Empty */
-        .empty-state {
-            text-align: center;
-            padding: 16px;
-        }
-
+        .empty-state { text-align: center; padding: 16px; }
         .empty-icon { font-size: 32px; opacity: 0.4; margin-bottom: 6px; }
         .empty-text { font-size: 12px; color: var(--text-dim); }
 
-        /* Resp */
         @media (max-width: 1100px) {
             .dashboard { grid-template-columns: 1fr 1fr; }
+            .col-left { order: 1; }
+            .col-main { order: 2; }
+            .col-right { order: 3; }
         }
 
         @media (max-width: 700px) {
             .dashboard { grid-template-columns: 1fr; }
-            .panel.size-1, .panel.size-2, .panel.size-3 { min-height: auto; }
         }
     </style>
 </head>
@@ -798,14 +826,14 @@
     <div class="rain-container" id="rainContainer"></div>
 
     <div class="container">
-        <div class="dashboard" id="dashboard">
-            <!-- Left -->
-            <div class="left-col">
-                <div class="panel size-1" id="clockPanel">
+        <div class="dashboard">
+            <div class="col-left">
+                <div class="panel" id="clockPanel">
                     <div class="panel-header">
                         <div class="panel-title">Time</div>
                         <div class="panel-actions">
                             <button class="panel-btn" id="settingsBtn">⚙</button>
+                            <button class="panel-btn" id="backupBtn">💾</button>
                         </div>
                     </div>
                     <div class="clock-display">
@@ -820,9 +848,12 @@
                     </div>
                 </div>
 
-                <div class="panel size-1" id="ambientPanel">
+                <div class="panel" id="ambientPanel">
                     <div class="panel-header">
                         <div class="panel-title">Ambient</div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" id="addTagBtn">+ Tag</button>
+                        </div>
                     </div>
                     <div class="ambient-btns">
                         <button class="ambient-btn active" id="rainToggle">
@@ -843,27 +874,46 @@
                     </div>
                 </div>
 
-                <div class="panel size-1" id="calendarPanel">
+                <div class="panel" id="calendarPanel">
                     <div class="panel-header">
                         <div class="panel-title">Calendar</div>
-                        <div class="panel-actions">
-                            <button class="panel-btn" id="addTagBtn">+ Tag</button>
-                        </div>
                     </div>
-                    <div class="calendar">
-                        <div class="calendar-nav">
-                            <button class="calendar-nav-btn" id="prevMonth">←</button>
-                            <div class="calendar-month" id="calendarMonth"></div>
-                            <button class="calendar-nav-btn" id="nextMonth">→</button>
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" id="prevMonth">←</button>
+                        <div class="calendar-month" id="calendarMonth"></div>
+                        <button class="calendar-nav-btn" id="nextMonth">→</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <div class="panel" id="pomodoroPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Focus</div>
+                    </div>
+                    <div class="pomodoro-display">
+                        <div class="pomodoro-time" id="pomodoroTime">25:00</div>
+                        <div class="pomodoro-status" id="pomodoroStatus">Ready to focus</div>
+                    </div>
+                    <div class="pomodoro-controls">
+                        <button class="pomodoro-btn primary" id="pomodoroStart">Start</button>
+                        <button class="pomodoro-btn" id="pomodoroPause">Pause</button>
+                        <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
+                    </div>
+                    <div class="pomodoro-settings">
+                        <div class="pomodoro-setting">
+                            <label>Focus</label>
+                            <input type="number" id="focusTime" value="25" min="1" max="60">
                         </div>
-                        <div class="calendar-grid" id="calendarGrid"></div>
+                        <div class="pomodoro-setting">
+                            <label>Break</label>
+                            <input type="number" id="breakTime" value="5" min="1" max="30">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main -->
-            <div class="main-col">
-                <div class="panel size-2" id="tasksPanel">
+            <div class="col-main">
+                <div class="panel" id="tasksPanel">
                     <div class="panel-header">
                         <div class="panel-title">Tasks</div>
                     </div>
@@ -885,9 +935,8 @@
                 </div>
             </div>
 
-            <!-- Right -->
-            <div class="right-col">
-                <div class="panel size-1" id="weatherPanel">
+            <div class="col-right">
+                <div class="panel" id="weatherPanel">
                     <div class="panel-header">
                         <div class="panel-title">Weather</div>
                     </div>
@@ -914,7 +963,19 @@
                     </div>
                 </div>
 
-                <div class="panel size-1" id="notesPanel">
+                <div class="panel" id="linksPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Quick Links</div>
+                    </div>
+                    <div class="links-list" id="linksList"></div>
+                    <div class="link-input-row">
+                        <input type="text" class="link-input" id="linkName" placeholder="Name">
+                        <input type="url" class="link-input" id="linkUrl" placeholder="URL">
+                        <button class="link-add-btn" id="linkAdd">+</button>
+                    </div>
+                </div>
+
+                <div class="panel" id="notesPanel">
                     <div class="panel-header">
                         <div class="panel-title">Notes</div>
                     </div>
@@ -935,14 +996,6 @@
             <div class="settings-option">
                 <div class="settings-label">Theme</div>
                 <div class="theme-grid" id="themeGrid"></div>
-            </div>
-            <div class="settings-option">
-                <div class="settings-label">Panel Size</div>
-                <div class="size-btns">
-                    <button class="size-btn" data-size="1">Small</button>
-                    <button class="size-btn" data-size="2">Medium</button>
-                    <button class="size-btn" data-size="3">Large</button>
-                </div>
             </div>
             <div class="modal-btns">
                 <button class="modal-btn primary" id="settingsDone">Done</button>
@@ -976,6 +1029,24 @@
         </div>
     </div>
 
+    <div class="modal" id="backupModal">
+        <div class="modal-content">
+            <div class="modal-title">Backup & Restore</div>
+            <div class="settings-option">
+                <div class="settings-label">Export your data</div>
+                <button class="modal-btn primary" id="exportBtn" style="width:100%;margin-bottom:12px">Download Backup</button>
+            </div>
+            <div class="settings-option">
+                <div class="settings-label">Import backup</div>
+                <input type="file" id="importFile" accept=".json" style="display:none">
+                <button class="modal-btn" id="importBtn" style="width:100%">Choose File</button>
+            </div>
+            <div class="modal-btns">
+                <button class="modal-btn" id="backupDone">Done</button>
+            </div>
+        </div>
+    </div>
+
     <audio id="rainAudio" loop>
         <source src="https://cdn.pixabay.com/audio/2022/05/13/audio_257112d7b0.mp3" type="audio/mpeg">
     </audio>
@@ -990,22 +1061,27 @@
                 { name: 'personal', color: '#ff6b9d' },
                 { name: 'urgent', color: '#ff6b6b' }
             ],
-            events: JSON.parse(localStorage.getItem('events')) || {},
+            links: JSON.parse(localStorage.getItem('links')) || [],
             filter: 'all',
             clock: localStorage.getItem('clock') || '12',
             light: localStorage.getItem('lightMode') === 'true',
             rain: localStorage.getItem('rain') === 'true',
             sound: localStorage.getItem('sound') === 'true',
             theme: localStorage.getItem('theme') || 'rainy',
-            panelSizes: JSON.parse(localStorage.getItem('panelSizes')) || {
-                clockPanel: 1, ambientPanel: 1, calendarPanel: 1,
-                tasksPanel: 2, weatherPanel: 1, notesPanel: 1
-            },
             selectedDate: new Date().toISOString().split('T')[0]
         };
 
         let currentMonth = new Date();
         let weather = { temp: 15, con: 'rainy', lat: 35.0116, lon: 135.7681, name: 'Kyoto, JP' };
+        
+        let pomodoro = {
+            time: 25 * 60,
+            isRunning: false,
+            isBreak: false,
+            interval: null,
+            focusTime: 25,
+            breakTime: 5
+        };
 
         const themes = [
             { name: 'rainy', bg: '#0f0f1a', primary: '#c9a8ff' },
@@ -1018,31 +1094,27 @@
             { name: 'midnight', bg: '#0a0a1a', primary: '#6366f1' }
         ];
 
-        // Save
         function save() {
             localStorage.setItem('todos', JSON.stringify(data.todos));
             localStorage.setItem('notes', data.notes);
             localStorage.setItem('tags', JSON.stringify(data.tags));
-            localStorage.setItem('events', JSON.stringify(data.events));
+            localStorage.setItem('links', JSON.stringify(data.links));
             localStorage.setItem('filter', data.filter);
             localStorage.setItem('clock', data.clock);
             localStorage.setItem('lightMode', data.light);
             localStorage.setItem('rain', data.rain);
             localStorage.setItem('sound', data.sound);
             localStorage.setItem('theme', data.theme);
-            localStorage.setItem('panelSizes', JSON.stringify(data.panelSizes));
             localStorage.setItem('selectedDate', data.selectedDate);
         }
 
-        // Sync
         window.addEventListener('storage', (e) => {
             if (e.key === 'todos') data.todos = JSON.parse(e.newValue);
             else if (e.key === 'notes') data.notes = e.newValue;
             else if (e.key === 'tags') data.tags = JSON.parse(e.newValue);
-            else if (e.key === 'events') data.events = JSON.parse(e.newValue);
+            else if (e.key === 'links') data.links = JSON.parse(e.newValue);
             else if (e.key === 'lightMode') data.light = e.newValue === 'true';
             else if (e.key === 'theme') data.theme = e.newValue;
-            else if (e.key === 'panelSizes') data.panelSizes = JSON.parse(e.newValue);
             refreshUI();
         });
 
@@ -1050,19 +1122,11 @@
             renderTodos();
             renderFilters();
             renderCalendar();
+            renderLinks();
             applyTheme(data.theme);
             applyLight();
             renderTags();
             updateCat();
-            applyPanelSizes();
-        }
-
-        // Panel sizing
-        function applyPanelSizes() {
-            Object.keys(data.panelSizes).forEach(id => {
-                const panel = document.getElementById(id);
-                if (panel) panel.className = 'panel size-' + data.panelSizes[id];
-            });
         }
 
         // Clock
@@ -1071,18 +1135,12 @@
             let h = now.getHours();
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
-            
             if (data.clock === '12') h = h % 12 || 12;
             else if (data.clock === 'jp') h = now.getHours();
-            
             document.getElementById('clockH').textContent = String(h).padStart(2, '0');
             document.getElementById('clockM').textContent = m;
             document.getElementById('clockS').textContent = ':' + s;
-            
-            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { 
-                weekday: 'long', month: 'long', day: 'numeric' 
-            });
-            
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             let g = 'Night';
             if (now.getHours() >= 5 && now.getHours() < 12) g = 'Morning';
             else if (now.getHours() >= 12 && now.getHours() < 17) g = 'Afternoon';
@@ -1154,47 +1212,28 @@
             document.getElementById('locText').textContent = weather.name;
             fetchWeather();
         });
-
         getLoc();
 
         // Calendar
         function renderCalendar() {
-            const monthLabel = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            document.getElementById('calendarMonth').textContent = monthLabel;
-            
+            document.getElementById('calendarMonth').textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
             const grid = document.getElementById('calendarGrid');
             const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-            
             let html = days.map(d => `<div class="calendar-day-name">${d}</div>`).join('');
-            
             const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
             const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
             const daysInPrevMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 0).getDate();
             const today = new Date().toISOString().split('T')[0];
-            
-            // Previous month
-            for (let i = firstDay - 1; i >= 0; i--) {
-                const day = daysInPrevMonth - i;
-                html += `<div class="calendar-day other-month">${day}</div>`;
-            }
-            
-            // Current month
+            for (let i = firstDay - 1; i >= 0; i--) html += `<div class="calendar-day other-month">${daysInPrevMonth - i}</div>`;
             for (let i = 1; i <= daysInMonth; i++) {
                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i).toISOString().split('T')[0];
                 const isToday = date === today;
                 const isSelected = date === data.selectedDate;
-                const hasEvent = data.events[date]?.length > 0;
-                html += `<div class="calendar-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}${hasEvent ? ' has-event' : ''}" data-date="${date}">${i}</div>`;
+                html += `<div class="calendar-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}" data-date="${date}">${i}</div>`;
             }
-            
-            // Next month
             const remaining = 42 - (firstDay + daysInMonth);
-            for (let i = 1; i <= remaining; i++) {
-                html += `<div class="calendar-day other-month">${i}</div>`;
-            }
-            
+            for (let i = 1; i <= remaining; i++) html += `<div class="calendar-day other-month">${i}</div>`;
             grid.innerHTML = html;
-            
             grid.querySelectorAll('.calendar-day[data-date]').forEach(d => {
                 d.addEventListener('click', () => {
                     data.selectedDate = d.dataset.date;
@@ -1204,27 +1243,103 @@
             });
         }
 
-        document.getElementById('prevMonth').addEventListener('click', () => {
-            currentMonth.setMonth(currentMonth.getMonth() - 1);
-            renderCalendar();
-        });
-        document.getElementById('nextMonth').addEventListener('click', () => {
-            currentMonth.setMonth(currentMonth.getMonth() + 1);
-            renderCalendar();
-        });
-
+        document.getElementById('prevMonth').addEventListener('click', () => { currentMonth.setMonth(currentMonth.getMonth() - 1); renderCalendar(); });
+        document.getElementById('nextMonth').addEventListener('click', () => { currentMonth.setMonth(currentMonth.getMonth() + 1); renderCalendar(); });
         renderCalendar();
+
+        // Pomodoro
+        function updatePomodoroDisplay() {
+            const mins = Math.floor(pomodoro.time / 60);
+            const secs = pomodoro.time % 60;
+            document.getElementById('pomodoroTime').textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            document.getElementById('pomodoroTime').className = 'pomodoro-time ' + (pomodoro.isBreak ? 'break' : 'focus');
+            document.getElementById('pomodoroStatus').textContent = pomodoro.isRunning ? (pomodoro.isBreak ? 'Break time!' : 'Focusing...') : (pomodoro.isBreak ? 'Break over' : 'Ready to focus');
+        }
+
+        function togglePomodoro() {
+            if (pomodoro.isRunning) {
+                clearInterval(pomodoro.interval);
+                pomodoro.isRunning = false;
+            } else {
+                pomodoro.isRunning = true;
+                pomodoro.interval = setInterval(() => {
+                    if (pomodoro.time > 0) {
+                        pomodoro.time--;
+                        updatePomodoroDisplay();
+                    } else {
+                        clearInterval(pomodoro.interval);
+                        pomodoro.isRunning = false;
+                        pomodoro.isBreak = !pomodoro.isBreak;
+                        pomodoro.time = (pomodoro.isBreak ? pomodoro.breakTime : pomodoro.focusTime) * 60;
+                        if (pomodoro.isBreak) pomodoro.breakTime = parseInt(document.getElementById('breakTime').value);
+                        else pomodoro.focusTime = parseInt(document.getElementById('focusTime').value);
+                        updatePomodoroDisplay();
+                    }
+                }, 1000);
+            }
+            updatePomodoroDisplay();
+        }
+
+        document.getElementById('pomodoroStart').addEventListener('click', togglePomodoro);
+        document.getElementById('pomodoroPause').addEventListener('click', () => {
+            clearInterval(pomodoro.interval);
+            pomodoro.isRunning = false;
+            updatePomodoroDisplay();
+        });
+        document.getElementById('pomodoroReset').addEventListener('click', () => {
+            clearInterval(pomodoro.interval);
+            pomodoro.isRunning = false;
+            pomodoro.isBreak = false;
+            pomodoro.focusTime = parseInt(document.getElementById('focusTime').value);
+            pomodoro.time = pomodoro.focusTime * 60;
+            updatePomodoroDisplay();
+        });
+        updatePomodoroDisplay();
+
+        // Links
+        function renderLinks() {
+            const list = document.getElementById('linksList');
+            if (!data.links.length) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-text">No links yet</div></div>';
+            } else {
+                list.innerHTML = data.links.map((l, i) => `
+                    <a href="${l.url}" target="_blank" class="link-item">
+                        <span class="link-icon">🔗</span>
+                        <span class="link-name">${l.name}</span>
+                        <button class="link-x" data-i="${i}">×</button>
+                    </a>
+                `).join('');
+                list.querySelectorAll('.link-x').forEach(b => {
+                    b.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        data.links.splice(b.dataset.i, 1);
+                        save();
+                        renderLinks();
+                    });
+                });
+            }
+        }
+
+        document.getElementById('linkAdd').addEventListener('click', () => {
+            const name = document.getElementById('linkName').value.trim();
+            const url = document.getElementById('linkUrl').value.trim();
+            if (!name || !url) return;
+            data.links.push({ name, url });
+            save();
+            document.getElementById('linkName').value = '';
+            document.getElementById('linkUrl').value = '';
+            renderLinks();
+        });
+        renderLinks();
 
         // Tasks
         function updateCat() {
-            document.getElementById('taskCat').innerHTML = '<option value="">Tag</option>' +
-                data.tags.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+            document.getElementById('taskCat').innerHTML = '<option value="">Tag</option>' + data.tags.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
         }
 
         function renderFilters() {
-            document.getElementById('taskFilters').innerHTML = '<button class="task-filter-btn active" data-filter="all">All</button>' +
-                data.tags.map(t => `<button class="task-filter-btn" data-filter="${t.name}">${t.name}</button>`).join('');
-            
+            document.getElementById('taskFilters').innerHTML = '<button class="task-filter-btn active" data-filter="all">All</button>' + data.tags.map(t => `<button class="task-filter-btn" data-filter="${t.name}">${t.name}</button>`).join('');
             document.querySelectorAll('.task-filter-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.task-filter-btn').forEach(b => b.classList.remove('active'));
@@ -1234,7 +1349,6 @@
                     renderTodos();
                 });
             });
-            
             document.querySelector(`.task-filter-btn[data-filter="${data.filter}"]`)?.classList.add('active');
         }
 
@@ -1245,9 +1359,7 @@
         function renderTodos() {
             let tasks = data.todos;
             if (data.filter !== 'all') tasks = tasks.filter(t => t.cat === data.filter);
-            
             const list = document.getElementById('taskList');
-            
             if (!tasks.length) {
                 list.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">No tasks</div></div>';
             } else {
@@ -1259,7 +1371,6 @@
                         <button class="task-del" data-i="${i}">×</button>
                     </div>
                 `).join('');
-                
                 list.querySelectorAll('.task-check').forEach(b => {
                     b.addEventListener('click', () => {
                         const text = b.closest('.task-item').querySelector('.task-text').textContent;
@@ -1268,16 +1379,10 @@
                         renderTodos();
                     });
                 });
-                
                 list.querySelectorAll('.task-del').forEach(b => {
-                    b.addEventListener('click', () => {
-                        data.todos.splice(b.dataset.i, 1);
-                        save();
-                        renderTodos();
-                    });
+                    b.addEventListener('click', () => { data.todos.splice(b.dataset.i, 1); save(); renderTodos(); });
                 });
             }
-            
             const left = data.todos.filter(t => !t.done).length;
             document.getElementById('taskCount').textContent = `${left} of ${data.todos.length} left`;
         }
@@ -1292,15 +1397,8 @@
             document.getElementById('taskCat').value = '';
             renderTodos();
         });
-        document.getElementById('taskInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('taskAddBtn').click();
-        });
-        document.getElementById('clearDone').addEventListener('click', () => {
-            data.todos = data.todos.filter(t => !t.done);
-            save();
-            renderTodos();
-        });
-
+        document.getElementById('taskInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('taskAddBtn').click(); });
+        document.getElementById('clearDone').addEventListener('click', () => { data.todos = data.todos.filter(t => !t.done); save(); renderTodos(); });
         renderTodos();
         renderFilters();
         updateCat();
@@ -1335,37 +1433,20 @@
             }
         }
 
-        document.getElementById('rainToggle').addEventListener('click', () => {
-            data.rain = !data.rain;
-            document.getElementById('rainToggle').classList.toggle('active', data.rain);
-            save();
-            applyRain();
-        });
+        document.getElementById('rainToggle').addEventListener('click', () => { data.rain = !data.rain; document.getElementById('rainToggle').classList.toggle('active', data.rain); save(); applyRain(); });
         if (data.rain) document.getElementById('rainToggle').classList.add('active');
         applyRain();
 
         document.getElementById('soundToggle').addEventListener('click', () => {
             data.sound = !data.sound;
             document.getElementById('soundToggle').classList.toggle('active', data.sound);
-            if (data.sound) {
-                document.getElementById('rainAudio').volume = 0.3;
-                document.getElementById('rainAudio').play().catch(() => {});
-            } else {
-                document.getElementById('rainAudio').pause();
-            }
+            if (data.sound) { document.getElementById('rainAudio').volume = 0.3; document.getElementById('rainAudio').play().catch(() => {}); }
+            else { document.getElementById('rainAudio').pause(); }
             save();
         });
 
-        function applyLight() {
-            document.body.classList.toggle('light-mode', data.light);
-            document.getElementById('lightToggle').classList.toggle('active', data.light);
-        }
-
-        document.getElementById('lightToggle').addEventListener('click', () => {
-            data.light = !data.light;
-            applyLight();
-            save();
-        });
+        function applyLight() { document.body.classList.toggle('light-mode', data.light); document.getElementById('lightToggle').classList.toggle('active', data.light); }
+        document.getElementById('lightToggle').addEventListener('click', () => { data.light = !data.light; applyLight(); save(); });
         applyLight();
 
         // Theme
@@ -1376,70 +1457,24 @@
             document.documentElement.style.setProperty('--primary-glow', t.primary + '66');
             data.theme = name;
             save();
-            
-            document.querySelectorAll('.theme-box').forEach(b => {
-                b.classList.toggle('active', b.dataset.theme === name);
-            });
+            document.querySelectorAll('.theme-box').forEach(b => b.classList.toggle('active', b.dataset.theme === name));
         }
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
-            document.getElementById('themeGrid').innerHTML = themes.map(t => `
-                <div class="theme-box ${t.name === data.theme ? 'active' : ''}" 
-                     style="background:${t.bg};border:3px solid ${t.primary}"
-                     data-theme="${t.name}"></div>
-            `).join('');
-            
-            document.querySelectorAll('.theme-box').forEach(b => {
-                b.addEventListener('click', () => applyTheme(b.dataset.theme));
-            });
-            
-            document.querySelectorAll('.size-btn').forEach(b => {
-                b.classList.remove('active');
-                if (b.dataset.size == data.panelSizes.tasksPanel) b.classList.add('active');
-            });
-            
+            document.getElementById('themeGrid').innerHTML = themes.map(t => `<div class="theme-box ${t.name === data.theme ? 'active' : ''}" style="background:${t.bg};border:3px solid ${t.primary}" data-theme="${t.name}"></div>`).join('');
+            document.querySelectorAll('.theme-box').forEach(b => b.addEventListener('click', () => applyTheme(b.dataset.theme)));
             document.getElementById('settingsModal').classList.add('active');
         });
-
-        document.querySelectorAll('.size-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                data.panelSizes.tasksPanel = parseInt(btn.dataset.size);
-                save();
-                applyPanelSizes();
-                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-
-        document.getElementById('settingsDone').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.remove('active');
-        });
+        document.getElementById('settingsDone').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('active'));
         applyTheme(data.theme);
 
         // Tags
         function renderTags() {
-            document.getElementById('tagsList').innerHTML = data.tags.map((t, i) => `
-                <div class="tag-item">
-                    <div class="tag-name"><span class="tag-color" style="background:${t.color}"></span>${t.name}</div>
-                    <button class="tag-x" data-i="${i}">×</button>
-                </div>
-            `).join('');
-            
-            document.querySelectorAll('.tag-x').forEach(b => {
-                b.addEventListener('click', () => {
-                    data.tags.splice(b.dataset.i, 1);
-                    save();
-                    renderTags();
-                    renderFilters();
-                    updateCat();
-                });
-            });
+            document.getElementById('tagsList').innerHTML = data.tags.map((t, i) => `<div class="tag-item"><div class="tag-name"><span class="tag-color" style="background:${t.color}"></span>${t.name}</div><button class="tag-x" data-i="${i}">×</button></div>`).join('');
+            document.querySelectorAll('.tag-x').forEach(b => b.addEventListener('click', () => { data.tags.splice(b.dataset.i, 1); save(); renderTags(); renderFilters(); updateCat(); }));
         }
 
-        document.getElementById('addTagBtn').addEventListener('click', () => {
-            renderTags();
-            document.getElementById('tagsModal').classList.add('active');
-        });
+        document.getElementById('addTagBtn').addEventListener('click', () => { renderTags(); document.getElementById('tagsModal').classList.add('active'); });
         document.getElementById('addTag').addEventListener('click', () => {
             const name = document.getElementById('tagName').value.trim().toLowerCase();
             if (!name || data.tags.some(t => t.name === name)) return;
@@ -1450,56 +1485,44 @@
             renderFilters();
             updateCat();
         });
-        document.getElementById('tagName').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('addTag').click();
-        });
-        document.getElementById('tagsDone').addEventListener('click', () => {
-            document.getElementById('tagsModal').classList.remove('active');
-        });
+        document.getElementById('tagName').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('addTag').click(); });
+        document.getElementById('tagsDone').addEventListener('click', () => document.getElementById('tagsModal').classList.remove('active'));
         renderTags();
 
-        // Drag
-        const panels = document.querySelectorAll('.panel');
-        let dragged = null;
-
-        panels.forEach(p => {
-            p.setAttribute('draggable', 'true');
-            
-            p.addEventListener('dragstart', (e) => {
-                dragged = p;
-                setTimeout(() => p.style.opacity = '0.5', 0);
-            });
-            
-            p.addEventListener('dragend', () => {
-                p.style.opacity = '1';
-                dragged = null;
-                panels.forEach(panel => panel.classList.remove('drag-over'));
-            });
-            
-            p.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                panels.forEach(panel => panel.classList.remove('drag-over'));
-                p.classList.add('drag-over');
-            });
-            
-            p.addEventListener('dragleave', () => {
-                p.classList.remove('drag-over');
-            });
-            
-            p.addEventListener('drop', (e) => {
-                e.preventDefault();
-                p.classList.remove('drag-over');
-                if (dragged && dragged !== p) {
-                    const rect = p.getBoundingClientRect();
-                    const dash = document.getElementById('dashboard');
-                    if (e.clientY < rect.top + rect.height / 2) {
-                        dash.insertBefore(dragged, p);
-                    } else {
-                        dash.insertBefore(dragged, p.nextSibling);
-                    }
-                }
-            });
+        // Backup
+        document.getElementById('backupBtn').addEventListener('click', () => document.getElementById('backupModal').classList.add('active'));
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const backup = { todos: data.todos, notes: data.notes, tags: data.tags, links: data.links, exported: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lifeos-backup-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
         });
+        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+        document.getElementById('importFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const backup = JSON.parse(event.target.result);
+                    if (backup.todos) data.todos = backup.todos;
+                    if (backup.notes !== undefined) data.notes = backup.notes;
+                    if (backup.tags) data.tags = backup.tags;
+                    if (backup.links) data.links = backup.links;
+                    save();
+                    refreshUI();
+                    alert('Backup restored successfully!');
+                } catch (err) {
+                    alert('Invalid backup file!');
+                }
+            };
+            reader.readAsText(file);
+        });
+        document.getElementById('backupDone').addEventListener('click', () => document.getElementById('backupModal').classList.remove('active'));
 
         // Keyboard
         document.addEventListener('keydown', (e) => {
@@ -1510,8 +1533,6 @@
             if (e.key === 'l') document.getElementById('lightToggle').click();
             if (e.key === ',') document.getElementById('settingsBtn').click();
         });
-
-        applyPanelSizes();
     </script>
 </body>
 </html>
