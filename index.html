@@ -10,7 +10,6 @@
     <style>
         :root {
             --bg: #0f0f1a;
-            --bg-alt: #16162a;
             --glass: rgba(255, 255, 255, 0.04);
             --glass-hover: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.08);
@@ -25,15 +24,12 @@
             --success: #6bcf6b;
             --accent-blue: #5ca8ff;
             --accent-pink: #ff6b9d;
-            --accent-orange: #ffb347;
-            --panel-gap: 20px;
-            --panel-radius: 20px;
+            --panel-gap: 16px;
             --font-main: 'Outfit', sans-serif;
         }
 
         .light-mode {
             --bg: #f0f2f5;
-            --bg-alt: #e8eaed;
             --glass: rgba(0, 0, 0, 0.03);
             --glass-hover: rgba(0, 0, 0, 0.06);
             --glass-border: rgba(0, 0, 0, 0.08);
@@ -66,50 +62,44 @@
             z-index: -2;
         }
 
-        .light-mode body::before {
-            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 80, 200, 0.08), transparent),
-                        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(80, 60, 150, 0.05), transparent);
-        }
-
         .container {
             max-width: 1600px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 20px;
             min-height: 100vh;
         }
 
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr 1.5fr 1fr;
             gap: var(--panel-gap);
             align-items: start;
-            min-height: calc(100vh - 48px);
         }
 
         .panel {
             background: var(--glass);
             backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
-            border-radius: var(--panel-radius);
-            padding: 24px;
+            border-radius: 20px;
+            padding: 20px;
             transition: all 0.3s ease;
-            min-height: 200px;
+            height: 100%;
         }
 
-        .panel.size-small { grid-row: span 1; }
-        .panel.size-medium { grid-row: span 2; }
-        .panel.size-large { grid-row: span 3; }
+        .panel.size-1 { min-height: 200px; }
+        .panel.size-2 { min-height: 340px; }
+        .panel.size-3 { min-height: 520px; }
 
         .panel.drag-over {
             border-color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-glow);
+            box-shadow: 0 0 30px var(--primary-glow);
         }
 
         .panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             cursor: grab;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--glass-border);
@@ -121,18 +111,17 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--text-dim);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .panel-title::before {
             content: '';
+            display: inline-block;
             width: 6px;
             height: 6px;
             background: var(--primary);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary-glow);
+            margin-right: 8px;
+            box-shadow: 0 0 8px var(--primary-glow);
         }
 
         .panel-actions {
@@ -143,12 +132,11 @@
         .panel-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 6px 10px;
+            border-radius: 6px;
+            padding: 5px 8px;
             color: var(--text-dim);
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .panel-btn:hover {
@@ -157,10 +145,8 @@
         }
 
         /* Clock */
-        .clock-main { margin-bottom: 16px; }
-
         .clock-display {
-            font-size: 52px;
+            font-size: 56px;
             font-weight: 300;
             color: var(--text);
             line-height: 1;
@@ -171,7 +157,7 @@
         }
 
         .clock-seconds {
-            font-size: 22px;
+            font-size: 24px;
             color: var(--primary);
             opacity: 0.7;
         }
@@ -179,11 +165,11 @@
         .clock-date {
             font-size: 14px;
             color: var(--text-dim);
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .clock-greeting {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--secondary);
             margin-top: 8px;
             padding: 10px 14px;
@@ -195,16 +181,15 @@
             display: flex;
             gap: 6px;
             margin-top: 14px;
-            flex-wrap: wrap;
         }
 
         .clock-format-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 6px;
+            padding: 6px 10px;
             color: var(--text-dim);
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
         }
 
@@ -217,175 +202,83 @@
         .ambient-btns {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .ambient-btn {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 14px 16px;
+            border-radius: 10px;
+            padding: 12px 14px;
             color: var(--text);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .ambient-btn:hover {
             background: var(--glass-hover);
-            border-color: var(--glass-border-hover);
         }
 
         .ambient-btn.active {
-            background: linear-gradient(135deg, rgba(201, 168, 255, 0.12) 0%, rgba(255, 107, 157, 0.12) 100%);
+            background: linear-gradient(135deg, rgba(201, 168, 255, 0.1) 0%, rgba(255, 107, 157, 0.1) 100%);
             border-color: var(--primary);
         }
 
-        .ambient-icon { font-size: 18px; }
+        .ambient-icon { font-size: 16px; }
         .ambient-label { flex: 1; }
 
         .ambient-toggle {
-            width: 40px;
-            height: 22px;
+            width: 36px;
+            height: 20px;
             background: var(--glass);
-            border-radius: 11px;
+            border-radius: 10px;
             position: relative;
         }
 
         .ambient-toggle::after {
             content: '';
             position: absolute;
-            top: 3px;
-            left: 3px;
+            top: 2px;
+            left: 2px;
             width: 16px;
             height: 16px;
             background: var(--text-dim);
             border-radius: 50%;
-            transition: all 0.3s ease;
         }
 
         .ambient-btn.active .ambient-toggle { background: var(--primary); }
-        .ambient-btn.active .ambient-toggle::after {
-            left: 21px;
-            background: white;
-        }
-
-        /* Planner */
-        .planner-nav {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .planner-arrow {
-            width: 32px;
-            height: 32px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: var(--text-dim);
-            cursor: pointer;
-        }
-
-        .planner-arrow:hover { background: var(--glass-hover); color: var(--text); }
-
-        .planner-date { font-size: 13px; font-weight: 500; }
-
-        .planner-items {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 150px;
-            margin: 12px 0;
-        }
-
-        .planner-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-        }
-
-        .planner-time {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 11px;
-            color: var(--primary);
-            min-width: 50px;
-        }
-
-        .planner-text {
-            flex: 1;
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .planner-x {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-size: 14px;
-            opacity: 0;
-        }
-
-        .planner-item:hover .planner-x { opacity: 1; }
-        .planner-x:hover { color: var(--danger); }
-
-        .planner-add {
-            display: flex;
-            gap: 6px;
-            margin-top: 10px;
-        }
-
-        .plan-input {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 10px 12px;
-            color: var(--text);
-            font-size: 12px;
-            outline: none;
-        }
-
-        .plan-input:focus { border-color: var(--primary); }
-
-        .plan-time { width: 80px; font-family: 'IBM Plex Mono', monospace; }
-        .plan-task { flex: 1; }
-
-        .plan-add-btn {
-            width: 40px;
-            background: var(--primary);
-            border: none;
-            border-radius: 8px;
-            color: var(--bg);
-            font-size: 16px;
-            cursor: pointer;
-        }
+        .ambient-btn.active .ambient-toggle::after { left: 18px; background: white; }
 
         /* Calendar */
         .calendar {
             margin-top: 16px;
+            flex: 1;
         }
 
-        .calendar-header {
+        .calendar-nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 12px;
         }
 
-        .calendar-title {
+        .calendar-nav-btn {
+            width: 28px;
+            height: 28px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .calendar-nav-btn:hover { background: var(--glass-hover); }
+
+        .calendar-month {
             font-size: 14px;
             font-weight: 500;
         }
@@ -396,8 +289,8 @@
             gap: 4px;
         }
 
-        .calendar-day-header {
-            font-size: 10px;
+        .calendar-day-name {
+            font-size: 9px;
             color: var(--text-dim);
             text-align: center;
             padding: 4px;
@@ -412,70 +305,109 @@
             border-radius: 6px;
             cursor: pointer;
             background: var(--glass);
+            transition: all 0.2s ease;
         }
 
         .calendar-day:hover { background: var(--glass-hover); }
-        .calendar-day.today { background: var(--primary); color: var(--bg); }
-        .calendar-day.has-plans { border: 2px solid var(--primary); }
+
+        .calendar-day.other-month { opacity: 0.3; }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: var(--bg);
+            font-weight: 600;
+        }
+
+        .calendar-day.has-event {
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+
+        .calendar-day.selected {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        .calendar-events {
+            margin-top: 12px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .calendar-event {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .calendar-event-time {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--primary);
+        }
 
         /* Tasks */
         .task-input-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .task-input {
             flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 14px 18px;
+            border-radius: 10px;
+            padding: 12px 14px;
             color: var(--text);
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
         }
 
-        .task-input::placeholder { color: var(--text-dim); }
         .task-input:focus { border-color: var(--primary); }
 
         .task-cat {
-            width: 100px;
+            width: 90px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: 10px;
+            padding: 12px;
             color: var(--text);
-            font-size: 12px;
+            font-size: 11px;
             outline: none;
         }
 
         .task-cat option { background: var(--bg); }
 
         .task-add-btn {
-            width: 50px;
+            width: 42px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             color: white;
-            font-size: 22px;
+            font-size: 18px;
             cursor: pointer;
         }
 
         .task-filters {
             display: flex;
             gap: 6px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
         }
 
         .task-filter-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 8px 14px;
+            border-radius: 16px;
+            padding: 6px 12px;
             color: var(--text-dim);
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
         }
 
@@ -487,43 +419,51 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            min-height: 120px;
+            gap: 8px;
+            min-height: 100px;
         }
 
         .task-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 14px 18px;
+            gap: 12px;
+            padding: 12px 14px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
+            border-radius: 12px;
         }
 
         .task-item:hover { border-color: var(--glass-border-hover); }
 
         .task-check {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             border: 2px solid var(--glass-border-hover);
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .task-check.checked { background: var(--success); border-color: var(--success); }
-        .task-check.checked::after { content: '✓'; color: white; font-size: 12px; }
+        .task-check.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
 
-        .task-text { flex: 1; font-size: 14px; }
+        .task-check.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 11px;
+        }
+
+        .task-text { flex: 1; font-size: 13px; }
         .task-item.done .task-text { text-decoration: line-through; color: var(--text-dim); }
 
         .task-tag {
-            font-size: 10px;
-            padding: 4px 10px;
-            border-radius: 10px;
+            font-size: 9px;
+            padding: 3px 8px;
+            border-radius: 8px;
         }
 
         .task-del {
@@ -531,7 +471,7 @@
             border: none;
             color: var(--text-dim);
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             opacity: 0;
         }
 
@@ -541,21 +481,20 @@
         .task-foot {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-            padding-top: 14px;
+            margin-top: 14px;
+            padding-top: 12px;
             border-top: 1px solid var(--glass-border);
         }
 
-        .task-count { font-size: 12px; color: var(--text-dim); }
+        .task-count { font-size: 11px; color: var(--text-dim); }
 
         .task-clear {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 8px 14px;
+            border-radius: 6px;
+            padding: 6px 10px;
             color: var(--text-dim);
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
         }
 
@@ -565,99 +504,94 @@
         .weather-main {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .weather-icon-wrap {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .weather-icon { font-size: 42px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        .weather-icon { font-size: 38px; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
 
         .weather-details { flex: 1; }
 
         .weather-temp {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 300;
-            line-height: 1;
         }
 
         .weather-temp-f {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-dim);
-            margin-left: 4px;
         }
 
-        .weather-con { font-size: 14px; color: var(--secondary); margin-top: 4px; }
+        .weather-con { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 
         .weather-loc {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 16px;
-            padding: 12px 16px;
+            margin-top: 14px;
+            padding: 10px 12px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 10px;
             cursor: pointer;
         }
 
-        .weather-loc:hover { border-color: var(--primary); }
-
-        .loc-text { flex: 1; font-size: 12px; color: var(--text-dim); }
-        .loc-change { font-size: 11px; color: var(--primary); }
+        .loc-text { flex: 1; font-size: 11px; color: var(--text-dim); }
+        .loc-change { font-size: 10px; color: var(--primary); }
 
         .weather-btns {
             display: flex;
             gap: 8px;
-            margin-top: 14px;
+            margin-top: 12px;
         }
 
         .weather-btn {
             flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 10px;
             color: var(--text-dim);
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
         }
 
-        .weather-btn:hover { background: var(--glass-hover); color: var(--text); }
+        .weather-btn:hover { background: var(--glass-hover); }
         .weather-btn.active { background: var(--primary); color: var(--bg); }
 
         /* Notes */
         .notes-area {
             flex: 1;
-            min-height: 120px;
+            min-height: 100px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 14px;
             color: var(--text);
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 13px;
+            font-size: 12px;
             line-height: 1.6;
             resize: none;
             outline: none;
         }
 
-        .notes-area::placeholder { color: var(--text-dim); }
         .notes-area:focus { border-color: var(--primary); }
 
         .notes-status {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-dim);
-            margin-top: 10px;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -668,10 +602,7 @@
             height: 6px;
             background: var(--success);
             border-radius: 50%;
-            animation: pulse 2s infinite;
         }
-
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
         /* Rain */
         .rain-container {
@@ -679,7 +610,6 @@
             inset: 0;
             pointer-events: none;
             z-index: -1;
-            overflow: hidden;
         }
 
         .raindrop {
@@ -716,38 +646,38 @@
         .modal-content {
             background: var(--bg);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 18px;
+            padding: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 360px;
         }
 
-        .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+        .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
 
         .modal-input {
             width: 100%;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 14px 16px;
+            border-radius: 8px;
+            padding: 12px;
             color: var(--text);
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .modal-input:focus { border-color: var(--primary); }
 
-        .modal-btns { display: flex; gap: 10px; }
+        .modal-btns { display: flex; gap: 8px; }
 
         .modal-btn {
             flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 14px;
+            border-radius: 8px;
+            padding: 10px;
             color: var(--text-dim);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
         }
 
@@ -755,64 +685,64 @@
         .modal-btn.primary { background: var(--primary); color: var(--bg); }
 
         /* Tags */
-        .tags-list { max-height: 150px; overflow-y: auto; margin-bottom: 14px; }
+        .tags-list { max-height: 120px; overflow-y: auto; margin-bottom: 10px; }
 
         .tag-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
+            padding: 10px 12px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            margin-bottom: 6px;
+            border-radius: 8px;
+            margin-bottom: 4px;
         }
 
         .tag-name {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 12px;
         }
 
-        .tag-color { width: 12px; height: 12px; border-radius: 50%; }
+        .tag-color { width: 10px; height: 10px; border-radius: 50%; }
 
         .tag-x {
             background: none;
             border: none;
             color: var(--text-dim);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .tag-x:hover { color: var(--danger); }
 
         .add-tag-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
 
         .add-tag-row input[type="color"] {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
         }
 
         .add-tag-row .modal-input { margin-bottom: 0; }
 
-        /* Settings */
+        /* Theme */
         .theme-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         .theme-box {
             aspect-ratio: 1;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             border: 2px solid transparent;
         }
@@ -820,74 +750,47 @@
         .theme-box:hover { transform: scale(1.1); }
         .theme-box.active { border-color: var(--text); }
 
-        .settings-option { margin-bottom: 18px; }
+        .settings-option { margin-bottom: 14px; }
 
         .settings-label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
+
+        .size-btns { display: flex; gap: 6px; }
+        .size-btn {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            padding: 8px;
+            color: var(--text-dim);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .size-btn:hover, .size-btn.active { background: var(--primary); color: var(--bg); }
 
         /* Empty */
         .empty-state {
             text-align: center;
-            padding: 20px;
+            padding: 16px;
         }
 
-        .empty-icon {
-            font-size: 36px;
-            opacity: 0.4;
-            margin-bottom: 8px;
-        }
-
-        .empty-text {
-            font-size: 13px;
-            color: var(--text-dim);
-        }
-
-        /* Resize */
-        .resize-handle {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 16px;
-            height: 16px;
-            cursor: se-resize;
-            opacity: 0.3;
-        }
-
-        .resize-handle::before,
-        .resize-handle::after {
-            content: '';
-            position: absolute;
-            background: var(--text-dim);
-            border-radius: 2px;
-        }
-
-        .resize-handle::before {
-            width: 12px;
-            height: 2px;
-            bottom: 0;
-            right: 0;
-        }
-
-        .resize-handle::after {
-            width: 2px;
-            height: 12px;
-            bottom: 0;
-            right: 0;
-        }
+        .empty-icon { font-size: 32px; opacity: 0.4; margin-bottom: 6px; }
+        .empty-text { font-size: 12px; color: var(--text-dim); }
 
         /* Resp */
         @media (max-width: 1100px) {
-            .dashboard { grid-template-columns: repeat(2, 1fr); }
+            .dashboard { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 700px) {
             .dashboard { grid-template-columns: 1fr; }
-            .panel { min-height: auto; }
+            .panel.size-1, .panel.size-2, .panel.size-3 { min-height: auto; }
         }
     </style>
 </head>
@@ -896,139 +799,130 @@
 
     <div class="container">
         <div class="dashboard" id="dashboard">
-            <div class="panel" id="clockPanel" data-size="1">
-                <div class="panel-header">
-                    <div class="panel-title">Time</div>
-                    <div class="panel-actions">
-                        <button class="panel-btn" id="settingsBtn">⚙</button>
+            <!-- Left -->
+            <div class="left-col">
+                <div class="panel size-1" id="clockPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Time</div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" id="settingsBtn">⚙</button>
+                        </div>
                     </div>
-                </div>
-                <div class="clock-main">
                     <div class="clock-display">
                         <span id="clockH">00</span>:<span id="clockM">00</span><span class="clock-seconds" id="clockS">:00</span>
                     </div>
                     <div class="clock-date" id="clockDate"></div>
                     <div class="clock-greeting" id="greeting"></div>
-                </div>
-                <div class="clock-formats">
-                    <button class="clock-format-btn" data-f="12">12h</button>
-                    <button class="clock-format-btn" data-f="24">24h</button>
-                    <button class="clock-format-btn" data-f="jp">JP</button>
-                </div>
-            </div>
-
-            <div class="panel" id="ambientPanel" data-size="1">
-                <div class="panel-header">
-                    <div class="panel-title">Ambient</div>
-                </div>
-                <div class="ambient-btns">
-                    <button class="ambient-btn active" id="rainToggle">
-                        <span class="ambient-icon">🌧️</span>
-                        <span class="ambient-label">Rain</span>
-                        <span class="ambient-toggle"></span>
-                    </button>
-                    <button class="ambient-btn" id="soundToggle">
-                        <span class="ambient-icon">🔊</span>
-                        <span class="ambient-label">Sound</span>
-                        <span class="ambient-toggle"></span>
-                    </button>
-                    <button class="ambient-btn" id="glowToggle">
-                        <span class="ambient-icon">✨</span>
-                        <span class="ambient-label">Glow</span>
-                        <span class="ambient-toggle"></span>
-                    </button>
-                    <button class="ambient-btn" id="lightToggle">
-                        <span class="ambient-icon">☀️</span>
-                        <span class="ambient-label">Light</span>
-                        <span class="ambient-toggle"></span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="panel" id="plannerPanel" data-size="1">
-                <div class="panel-header">
-                    <div class="panel-title">Planner</div>
-                    <div class="panel-actions">
-                        <button class="panel-btn" id="addTagBtn">+ Tag</button>
+                    <div class="clock-formats">
+                        <button class="clock-format-btn" data-f="12">12h</button>
+                        <button class="clock-format-btn" data-f="24">24h</button>
+                        <button class="clock-format-btn" data-f="jp">JP</button>
                     </div>
                 </div>
-                <div class="planner-nav">
-                    <button class="planner-arrow" id="prevDay">←</button>
-                    <div class="planner-date" id="plannerDate"></div>
-                    <button class="planner-arrow" id="nextDay">→</button>
-                </div>
-                <div class="planner-items" id="plannerItems"></div>
-                <div class="planner-add">
-                    <input type="time" class="plan-input plan-time" id="planTime">
-                    <input type="text" class="plan-input plan-task" id="planTask" placeholder="Add plan...">
-                    <button class="plan-add-btn" id="planAdd">+</button>
-                </div>
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button class="planner-arrow" id="prevMonth">←</button>
-                        <div class="calendar-title" id="calendarTitle"></div>
-                        <button class="planner-arrow" id="nextMonth">→</button>
-                    </div>
-                    <div class="calendar-grid" id="calendarGrid"></div>
-                </div>
-            </div>
 
-            <div class="panel" id="tasksPanel" data-size="2">
-                <div class="panel-header">
-                    <div class="panel-title">Tasks</div>
-                </div>
-                <div class="task-input-row">
-                    <input type="text" class="task-input" id="taskInput" placeholder="Add task...">
-                    <select class="task-cat" id="taskCat">
-                        <option value="">Tag</option>
-                    </select>
-                    <button class="task-add-btn" id="taskAddBtn">+</button>
-                </div>
-                <div class="task-filters" id="taskFilters">
-                    <button class="task-filter-btn active" data-filter="all">All</button>
-                </div>
-                <div class="task-list" id="taskList"></div>
-                <div class="task-foot">
-                    <div class="task-count" id="taskCount"></div>
-                    <button class="task-clear" id="clearDone">Clear</button>
-                </div>
-            </div>
-
-            <div class="panel" id="weatherPanel" data-size="1">
-                <div class="panel-header">
-                    <div class="panel-title">Weather</div>
-                </div>
-                <div class="weather-main">
-                    <div class="weather-icon-wrap">
-                        <div class="weather-icon" id="weatherIcon">🌧️</div>
+                <div class="panel size-1" id="ambientPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Ambient</div>
                     </div>
-                    <div class="weather-details">
-                        <div class="weather-temp">
-                            <span id="tempC">--</span>°
-                            <span class="weather-temp-f" id="tempF">--°F</span>
+                    <div class="ambient-btns">
+                        <button class="ambient-btn active" id="rainToggle">
+                            <span class="ambient-icon">🌧️</span>
+                            <span class="ambient-label">Rain</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="soundToggle">
+                            <span class="ambient-icon">🔊</span>
+                            <span class="ambient-label">Sound</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="lightToggle">
+                            <span class="ambient-icon">☀️</span>
+                            <span class="ambient-label">Light</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel size-1" id="calendarPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Calendar</div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" id="addTagBtn">+ Tag</button>
                         </div>
-                        <div class="weather-con" id="weatherCon">Loading...</div>
                     </div>
-                </div>
-                <div class="weather-loc" id="locBtn">
-                    <span>📍</span>
-                    <span class="loc-text" id="locText">Locating...</span>
-                    <span class="loc-change">Change</span>
-                </div>
-                <div class="weather-btns">
-                    <button class="weather-btn" id="autoLocBtn">📡 Auto</button>
-                    <button class="weather-btn" id="manualBtn">🎨 Manual</button>
+                    <div class="calendar">
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" id="prevMonth">←</button>
+                            <div class="calendar-month" id="calendarMonth"></div>
+                            <button class="calendar-nav-btn" id="nextMonth">→</button>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="panel" id="notesPanel" data-size="1">
-                <div class="panel-header">
-                    <div class="panel-title">Notes</div>
+            <!-- Main -->
+            <div class="main-col">
+                <div class="panel size-2" id="tasksPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Tasks</div>
+                    </div>
+                    <div class="task-input-row">
+                        <input type="text" class="task-input" id="taskInput" placeholder="Add task...">
+                        <select class="task-cat" id="taskCat">
+                            <option value="">Tag</option>
+                        </select>
+                        <button class="task-add-btn" id="taskAddBtn">+</button>
+                    </div>
+                    <div class="task-filters" id="taskFilters">
+                        <button class="task-filter-btn active" data-filter="all">All</button>
+                    </div>
+                    <div class="task-list" id="taskList"></div>
+                    <div class="task-foot">
+                        <div class="task-count" id="taskCount"></div>
+                        <button class="task-clear" id="clearDone">Clear</button>
+                    </div>
                 </div>
-                <textarea class="notes-area" id="notesArea" placeholder="Write notes..."></textarea>
-                <div class="notes-status">
-                    <span class="status-dot"></span>
-                    <span id="notesStatus">Saved</span>
+            </div>
+
+            <!-- Right -->
+            <div class="right-col">
+                <div class="panel size-1" id="weatherPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Weather</div>
+                    </div>
+                    <div class="weather-main">
+                        <div class="weather-icon-wrap">
+                            <div class="weather-icon" id="weatherIcon">🌧️</div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="weather-temp">
+                                <span id="tempC">--</span>°
+                                <span class="weather-temp-f" id="tempF">--°F</span>
+                            </div>
+                            <div class="weather-con" id="weatherCon">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="weather-loc" id="locBtn">
+                        <span>📍</span>
+                        <span class="loc-text" id="locText">Locating...</span>
+                        <span class="loc-change">Change</span>
+                    </div>
+                    <div class="weather-btns">
+                        <button class="weather-btn" id="autoLocBtn">📡 Auto</button>
+                        <button class="weather-btn" id="manualBtn">🎨 Manual</button>
+                    </div>
+                </div>
+
+                <div class="panel size-1" id="notesPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Notes</div>
+                    </div>
+                    <textarea class="notes-area" id="notesArea" placeholder="Write notes..."></textarea>
+                    <div class="notes-status">
+                        <span class="status-dot"></span>
+                        <span id="notesStatus">Saved</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1044,10 +938,10 @@
             </div>
             <div class="settings-option">
                 <div class="settings-label">Panel Size</div>
-                <div class="modal-btns">
-                    <button class="modal-btn" id="sizeSmall">Small</button>
-                    <button class="modal-btn" id="sizeMedium">Medium</button>
-                    <button class="modal-btn" id="sizeLarge">Large</button>
+                <div class="size-btns">
+                    <button class="size-btn" data-size="1">Small</button>
+                    <button class="size-btn" data-size="2">Medium</button>
+                    <button class="size-btn" data-size="3">Large</button>
                 </div>
             </div>
             <div class="modal-btns">
@@ -1096,25 +990,21 @@
                 { name: 'personal', color: '#ff6b9d' },
                 { name: 'urgent', color: '#ff6b6b' }
             ],
-            planner: JSON.parse(localStorage.getItem('planner')) || {},
+            events: JSON.parse(localStorage.getItem('events')) || {},
             filter: 'all',
             clock: localStorage.getItem('clock') || '12',
             light: localStorage.getItem('lightMode') === 'true',
             rain: localStorage.getItem('rain') === 'true',
             sound: localStorage.getItem('sound') === 'true',
-            glow: localStorage.getItem('glow') === 'true',
             theme: localStorage.getItem('theme') || 'rainy',
-            font: localStorage.getItem('font') || 'Outfit',
             panelSizes: JSON.parse(localStorage.getItem('panelSizes')) || {
-                clockPanel: 1, ambientPanel: 1, plannerPanel: 1,
+                clockPanel: 1, ambientPanel: 1, calendarPanel: 1,
                 tasksPanel: 2, weatherPanel: 1, notesPanel: 1
-            }
+            },
+            selectedDate: new Date().toISOString().split('T')[0]
         };
 
-        let currentPlannerDate = new Date().toISOString().split('T')[0];
         let currentMonth = new Date();
-        let resizePanel = null;
-
         let weather = { temp: 15, con: 'rainy', lat: 35.0116, lon: 135.7681, name: 'Kyoto, JP' };
 
         const themes = [
@@ -1133,23 +1023,23 @@
             localStorage.setItem('todos', JSON.stringify(data.todos));
             localStorage.setItem('notes', data.notes);
             localStorage.setItem('tags', JSON.stringify(data.tags));
-            localStorage.setItem('planner', JSON.stringify(data.planner));
+            localStorage.setItem('events', JSON.stringify(data.events));
             localStorage.setItem('filter', data.filter);
             localStorage.setItem('clock', data.clock);
             localStorage.setItem('lightMode', data.light);
             localStorage.setItem('rain', data.rain);
             localStorage.setItem('sound', data.sound);
-            localStorage.setItem('glow', data.glow);
             localStorage.setItem('theme', data.theme);
             localStorage.setItem('panelSizes', JSON.stringify(data.panelSizes));
+            localStorage.setItem('selectedDate', data.selectedDate);
         }
 
-        // Cross-tab sync
+        // Sync
         window.addEventListener('storage', (e) => {
             if (e.key === 'todos') data.todos = JSON.parse(e.newValue);
             else if (e.key === 'notes') data.notes = e.newValue;
             else if (e.key === 'tags') data.tags = JSON.parse(e.newValue);
-            else if (e.key === 'planner') data.planner = JSON.parse(e.newValue);
+            else if (e.key === 'events') data.events = JSON.parse(e.newValue);
             else if (e.key === 'lightMode') data.light = e.newValue === 'true';
             else if (e.key === 'theme') data.theme = e.newValue;
             else if (e.key === 'panelSizes') data.panelSizes = JSON.parse(e.newValue);
@@ -1159,7 +1049,6 @@
         function refreshUI() {
             renderTodos();
             renderFilters();
-            renderPlanner();
             renderCalendar();
             applyTheme(data.theme);
             applyLight();
@@ -1172,10 +1061,7 @@
         function applyPanelSizes() {
             Object.keys(data.panelSizes).forEach(id => {
                 const panel = document.getElementById(id);
-                if (panel) {
-                    panel.classList.remove('size-small', 'size-medium', 'size-large');
-                    panel.classList.add('size-' + ['small', 'medium', 'large'][data.panelSizes[id] - 1]);
-                }
+                if (panel) panel.className = 'panel size-' + data.panelSizes[id];
             });
         }
 
@@ -1271,79 +1157,53 @@
 
         getLoc();
 
-        // Planner & Calendar
-        function renderPlanner() {
-            const d = new Date(currentPlannerDate);
-            document.getElementById('plannerDate').textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-            
-            const plans = data.planner[currentPlannerDate] || [];
-            const list = document.getElementById('plannerItems');
-            
-            if (!plans.length) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-text">No plans</div></div>';
-            } else {
-                list.innerHTML = plans.sort((a, b) => a.time.localeCompare(b.time)).map((p, i) => `
-                    <div class="planner-item">
-                        <div class="planner-time">${p.time}</div>
-                        <div class="planner-text">${p.task}</div>
-                        <button class="planner-x" data-i="${i}">×</button>
-                    </div>
-                `).join('');
-                list.querySelectorAll('.planner-x').forEach(b => {
-                    b.addEventListener('click', () => {
-                        data.planner[currentPlannerDate].splice(b.dataset.i, 1);
-                        save();
-                        renderPlanner();
-                        renderCalendar();
-                    });
-                });
-            }
-        }
-
+        // Calendar
         function renderCalendar() {
-            const title = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            document.getElementById('calendarTitle').textContent = title;
+            const monthLabel = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            document.getElementById('calendarMonth').textContent = monthLabel;
             
             const grid = document.getElementById('calendarGrid');
             const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
             
-            let html = days.map(d => `<div class="calendar-day-header">${d}</div>`).join('');
+            let html = days.map(d => `<div class="calendar-day-name">${d}</div>`).join('');
             
             const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
             const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+            const daysInPrevMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 0).getDate();
             const today = new Date().toISOString().split('T')[0];
             
-            for (let i = 0; i < firstDay; i++) html += '<div></div>';
+            // Previous month
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                html += `<div class="calendar-day other-month">${day}</div>`;
+            }
             
+            // Current month
             for (let i = 1; i <= daysInMonth; i++) {
                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i).toISOString().split('T')[0];
-                const hasPlans = data.planner[date]?.length > 0;
                 const isToday = date === today;
-                html += `<div class="calendar-day${isToday ? ' today' : ''}${hasPlans ? ' has-plans' : ''}" data-date="${date}">${i}</div>`;
+                const isSelected = date === data.selectedDate;
+                const hasEvent = data.events[date]?.length > 0;
+                html += `<div class="calendar-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}${hasEvent ? ' has-event' : ''}" data-date="${date}">${i}</div>`;
+            }
+            
+            // Next month
+            const remaining = 42 - (firstDay + daysInMonth);
+            for (let i = 1; i <= remaining; i++) {
+                html += `<div class="calendar-day other-month">${i}</div>`;
             }
             
             grid.innerHTML = html;
             
             grid.querySelectorAll('.calendar-day[data-date]').forEach(d => {
                 d.addEventListener('click', () => {
-                    currentPlannerDate = d.dataset.date;
-                    renderPlanner();
+                    data.selectedDate = d.dataset.date;
+                    save();
+                    renderCalendar();
                 });
             });
         }
 
-        document.getElementById('prevDay').addEventListener('click', () => {
-            const d = new Date(currentPlannerDate);
-            d.setDate(d.getDate() - 1);
-            currentPlannerDate = d.toISOString().split('T')[0];
-            renderPlanner();
-        });
-        document.getElementById('nextDay').addEventListener('click', () => {
-            const d = new Date(currentPlannerDate);
-            d.setDate(d.getDate() + 1);
-            currentPlannerDate = d.toISOString().split('T')[0];
-            renderPlanner();
-        });
         document.getElementById('prevMonth').addEventListener('click', () => {
             currentMonth.setMonth(currentMonth.getMonth() - 1);
             renderCalendar();
@@ -1352,23 +1212,7 @@
             currentMonth.setMonth(currentMonth.getMonth() + 1);
             renderCalendar();
         });
-        document.getElementById('planAdd').addEventListener('click', () => {
-            const time = document.getElementById('planTime').value;
-            const task = document.getElementById('planTask').value.trim();
-            if (!time || !task) return;
-            if (!data.planner[currentPlannerDate]) data.planner[currentPlannerDate] = [];
-            data.planner[currentPlannerDate].push({ time, task });
-            save();
-            document.getElementById('planTime').value = '';
-            document.getElementById('planTask').value = '';
-            renderPlanner();
-            renderCalendar();
-        });
-        document.getElementById('planTask').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('planAdd').click();
-        });
 
-        renderPlanner();
         renderCalendar();
 
         // Tasks
@@ -1462,11 +1306,11 @@
         updateCat();
 
         // Notes
-        let notesTimeout2;
+        let notesTimeout;
         document.getElementById('notesArea').addEventListener('input', () => {
             document.getElementById('notesStatus').textContent = '...';
-            clearTimeout(notesTimeout2);
-            notesTimeout2 = setTimeout(() => {
+            clearTimeout(notesTimeout);
+            notesTimeout = setTimeout(() => {
                 data.notes = document.getElementById('notesArea').value;
                 save();
                 document.getElementById('notesStatus').textContent = 'Saved';
@@ -1479,13 +1323,13 @@
             const con = document.getElementById('rainContainer');
             con.innerHTML = '';
             if (!data.rain) return;
-            for (let i = 0; i < 120; i++) {
+            for (let i = 0; i < 100; i++) {
                 const d = document.createElement('div');
                 d.className = 'raindrop';
                 d.style.left = Math.random() * 100 + 'vw';
-                d.style.height = Math.random() * 15 + 10 + 'px';
+                d.style.height = Math.random() * 12 + 8 + 'px';
                 d.style.animationDuration = Math.random() * 1 + 0.5 + 's';
-                d.style.animationDelay = Math.random() * 3 + 's';
+                d.style.animationDelay = Math.random() * 2 + 's';
                 d.style.opacity = Math.random() * 0.4 + 0.2;
                 con.appendChild(d);
             }
@@ -1511,13 +1355,6 @@
             }
             save();
         });
-
-        document.getElementById('glowToggle').addEventListener('click', () => {
-            data.glow = !data.glow;
-            document.getElementById('glowToggle').classList.toggle('active', data.glow);
-            save();
-        });
-        if (data.glow) document.getElementById('glowToggle').classList.add('active');
 
         function applyLight() {
             document.body.classList.toggle('light-mode', data.light);
@@ -1556,20 +1393,23 @@
                 b.addEventListener('click', () => applyTheme(b.dataset.theme));
             });
             
+            document.querySelectorAll('.size-btn').forEach(b => {
+                b.classList.remove('active');
+                if (b.dataset.size == data.panelSizes.tasksPanel) b.classList.add('active');
+            });
+            
             document.getElementById('settingsModal').classList.add('active');
         });
 
-        document.getElementById('sizeSmall').addEventListener('click', () => setPanelSize(1));
-        document.getElementById('sizeMedium').addEventListener('click', () => setPanelSize(2));
-        document.getElementById('sizeLarge').addEventListener('click', () => setPanelSize(3));
-
-        function setPanelSize(size) {
-            const panel = document.querySelector('.panel.drag-over') || document.getElementById('tasksPanel');
-            const id = panel.id;
-            data.panelSizes[id] = size;
-            save();
-            applyPanelSizes();
-        }
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                data.panelSizes.tasksPanel = parseInt(btn.dataset.size);
+                save();
+                applyPanelSizes();
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
 
         document.getElementById('settingsDone').addEventListener('click', () => {
             document.getElementById('settingsModal').classList.remove('active');
@@ -1618,7 +1458,7 @@
         });
         renderTags();
 
-        // Drag panels
+        // Drag
         const panels = document.querySelectorAll('.panel');
         let dragged = null;
 
@@ -1661,11 +1501,10 @@
             });
         });
 
-        // Keyboard shortcuts
+        // Keyboard
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.key === 'n') document.getElementById('taskInput').focus();
-            if (e.key === 't') document.getElementById('planTask').focus();
             if (e.key === 'r') document.getElementById('rainToggle').click();
             if (e.key === 's') document.getElementById('soundToggle').click();
             if (e.key === 'l') document.getElementById('lightToggle').click();
