@@ -667,8 +667,9 @@
 
         /* Notes */
         .notes-area {
+            width: 100%;
             flex: 1;
-            min-height: 80px;
+            min-height: 150px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
@@ -851,9 +852,6 @@
                 <div class="panel" id="ambientPanel">
                     <div class="panel-header">
                         <div class="panel-title">Ambient</div>
-                        <div class="panel-actions">
-                            <button class="panel-btn" id="addTagBtn">+ Tag</button>
-                        </div>
                     </div>
                     <div class="ambient-btns">
                         <button class="ambient-btn active" id="rainToggle">
@@ -873,6 +871,34 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="panel" id="weatherPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Weather</div>
+                    </div>
+                    <div class="weather-main">
+                        <div class="weather-icon-wrap">
+                            <div class="weather-icon" id="weatherIcon">🌧️</div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="weather-temp">
+                                <span id="tempC">--</span>°
+                                <span class="weather-temp-f" id="tempF">--°F</span>
+                            </div>
+                            <div class="weather-con" id="weatherCon">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="weather-loc" id="locBtn">
+                        <span>📍</span>
+                        <span class="loc-text" id="locText">Locating...</span>
+                        <span class="loc-change">Change</span>
+                    </div>
+                    <div class="weather-btns">
+                        <button class="weather-btn" id="autoLocBtn">📡 Auto</button>
+                        <button class="weather-btn" id="manualBtn">🎨 Manual</button>
+                    </div>
+                </div>
+            </div>
 
                 <div class="panel" id="calendarPanel">
                     <div class="panel-header">
@@ -916,6 +942,9 @@
                 <div class="panel" id="tasksPanel">
                     <div class="panel-header">
                         <div class="panel-title">Tasks</div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" id="addTagBtn">+ Tag</button>
+                        </div>
                     </div>
                     <div class="task-input-row">
                         <input type="text" class="task-input" id="taskInput" placeholder="Add task...">
@@ -933,33 +962,54 @@
                         <button class="task-clear" id="clearDone">Clear</button>
                     </div>
                 </div>
+
+                <div class="panel" id="notesPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Notes</div>
+                    </div>
+                    <textarea class="notes-area" id="notesArea" placeholder="Write notes..."></textarea>
+                    <div class="notes-status">
+                        <span class="status-dot"></span>
+                        <span id="notesStatus">Saved</span>
+                    </div>
+                </div>
             </div>
 
             <div class="col-right">
-                <div class="panel" id="weatherPanel">
+                <div class="panel" id="calendarPanel">
                     <div class="panel-header">
-                        <div class="panel-title">Weather</div>
+                        <div class="panel-title">Calendar</div>
                     </div>
-                    <div class="weather-main">
-                        <div class="weather-icon-wrap">
-                            <div class="weather-icon" id="weatherIcon">🌧️</div>
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" id="prevMonth">←</button>
+                        <div class="calendar-month" id="calendarMonth"></div>
+                        <button class="calendar-nav-btn" id="nextMonth">→</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <div class="panel" id="pomodoroPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Focus</div>
+                    </div>
+                    <div class="pomodoro-display">
+                        <div class="pomodoro-time" id="pomodoroTime">25:00</div>
+                        <div class="pomodoro-status" id="pomodoroStatus">Ready</div>
+                    </div>
+                    <div class="pomodoro-controls">
+                        <button class="pomodoro-btn primary" id="pomodoroStart">Start</button>
+                        <button class="pomodoro-btn" id="pomodoroPause">Pause</button>
+                        <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
+                    </div>
+                    <div class="pomodoro-settings">
+                        <div class="pomodoro-setting">
+                            <label>Focus</label>
+                            <input type="number" id="focusTime" value="25" min="1" max="60">
                         </div>
-                        <div class="weather-details">
-                            <div class="weather-temp">
-                                <span id="tempC">--</span>°
-                                <span class="weather-temp-f" id="tempF">--°F</span>
-                            </div>
-                            <div class="weather-con" id="weatherCon">Loading...</div>
+                        <div class="pomodoro-setting">
+                            <label>Break</label>
+                            <input type="number" id="breakTime" value="5" min="1" max="30">
                         </div>
-                    </div>
-                    <div class="weather-loc" id="locBtn">
-                        <span>📍</span>
-                        <span class="loc-text" id="locText">Locating...</span>
-                        <span class="loc-change">Change</span>
-                    </div>
-                    <div class="weather-btns">
-                        <button class="weather-btn" id="autoLocBtn">📡 Auto</button>
-                        <button class="weather-btn" id="manualBtn">🎨 Manual</button>
                     </div>
                 </div>
 
@@ -972,17 +1022,6 @@
                         <input type="text" class="link-input" id="linkName" placeholder="Name">
                         <input type="url" class="link-input" id="linkUrl" placeholder="URL">
                         <button class="link-add-btn" id="linkAdd">+</button>
-                    </div>
-                </div>
-
-                <div class="panel" id="notesPanel">
-                    <div class="panel-header">
-                        <div class="panel-title">Notes</div>
-                    </div>
-                    <textarea class="notes-area" id="notesArea" placeholder="Write notes..."></textarea>
-                    <div class="notes-status">
-                        <span class="status-dot"></span>
-                        <span id="notesStatus">Saved</span>
                     </div>
                 </div>
             </div>
