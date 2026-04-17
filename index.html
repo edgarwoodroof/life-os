@@ -11,8 +11,8 @@
         :root {
             --bg: #0f0f1a;
             --bg-alt: #16162a;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-hover: rgba(255, 255, 255, 0.06);
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-hover: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-border-hover: rgba(255, 255, 255, 0.15);
             --primary: #c9a8ff;
@@ -26,6 +26,22 @@
             --accent-blue: #5ca8ff;
             --accent-pink: #ff6b9d;
             --accent-orange: #ffb347;
+            --blur: 24px;
+            --font-main: 'Outfit', sans-serif;
+        }
+
+        .light-mode {
+            --bg: #f0f2f5;
+            --bg-alt: #e8eaed;
+            --glass: rgba(0, 0, 0, 0.03);
+            --glass-hover: rgba(0, 0, 0, 0.06);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-border-hover: rgba(0, 0, 0, 0.15);
+            --primary: #7c5cd6;
+            --primary-glow: rgba(124, 92, 214, 0.3);
+            --secondary: #9b8ac4;
+            --text: #1a1a2e;
+            --text-dim: #6a6a80;
         }
 
         * {
@@ -34,112 +50,83 @@
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 16px;
-        }
+        html { font-size: 16px; }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: var(--font-main);
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
+            transition: background 0.5s ease, color 0.3s ease;
             overflow-x: hidden;
-            transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s ease;
-            position: relative;
         }
 
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 80, 200, 0.15), transparent),
-                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(80, 60, 150, 0.1), transparent);
+            inset: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 80, 200, 0.12), transparent),
+                        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(80, 60, 150, 0.08), transparent);
             pointer-events: none;
             z-index: -2;
         }
 
+        .light-mode body::before {
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 80, 200, 0.08), transparent),
+                        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(80, 60, 150, 0.05), transparent);
+        }
+
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 20px;
             min-height: 100vh;
-            position: relative;
-            z-index: 1;
         }
 
         .dashboard {
             display: grid;
-            grid-template-columns: 320px 1fr 340px;
-            gap: 28px;
-            min-height: calc(100vh - 48px);
-            align-items: start;
+            grid-template-columns: 300px 1fr 320px;
+            gap: 20px;
+            min-height: calc(100vh - 40px);
         }
 
         .panel {
             background: var(--glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(var(--blur));
             border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            padding: 28px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-border-hover), transparent);
+        .panel.dragging {
             opacity: 0.5;
-        }
-
-        .panel:hover {
-            background: var(--glass-hover);
-            border-color: var(--glass-border-hover);
-            transform: translateY(-2px);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 60px rgba(201, 168, 255, 0.08);
-        }
-
-        .left-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .right-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+            transform: scale(0.98);
         }
 
         .panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
+            cursor: grab;
+        }
+
+        .panel-header:active {
+            cursor: grabbing;
         }
 
         .panel-title {
-            font-family: 'Space Grotesk', sans-serif;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
             color: var(--text-dim);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .panel-title::before {
@@ -148,74 +135,69 @@
             height: 6px;
             background: var(--primary);
             border-radius: 50%;
-            box-shadow: 0 0 12px var(--primary-glow);
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
-        /* Clock Widget */
-        .clock-panel {
-            padding: 32px;
+        .panel-action {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: var(--text-dim);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .clock-main {
-            margin-bottom: 28px;
+        .panel-action:hover {
+            background: var(--primary);
+            color: var(--bg);
         }
 
+        /* Clock */
         .clock-display {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 300;
             color: var(--text);
-            letter-spacing: 2px;
             line-height: 1;
             background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: none;
-            filter: drop-shadow(0 0 30px var(--primary-glow));
         }
 
         .clock-seconds {
-            font-size: 24px;
-            font-weight: 300;
+            font-size: 20px;
             color: var(--primary);
             opacity: 0.7;
-            margin-left: 4px;
         }
 
         .clock-date {
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-dim);
-            margin-top: 16px;
-            letter-spacing: 0.5px;
+            margin-top: 12px;
         }
 
         .clock-greeting {
-            font-size: 20px;
-            font-weight: 400;
+            font-size: 16px;
             color: var(--secondary);
-            margin-top: 12px;
-            padding: 12px 16px;
-            background: var(--glass);
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
+            margin-top: 10px;
         }
 
-        .clock-controls {
+        .clock-formats {
             display: flex;
-            gap: 8px;
-            margin-top: 20px;
+            gap: 6px;
+            margin-top: 14px;
             flex-wrap: wrap;
         }
 
         .clock-format-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 10px 16px;
+            border-radius: 8px;
+            padding: 8px 12px;
             color: var(--text-dim);
-            font-family: 'Outfit', sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -223,582 +205,25 @@
         .clock-format-btn:hover, .clock-format-btn.active {
             background: var(--primary);
             color: var(--bg);
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-glow);
         }
 
-        /* Weather Widget */
-        .weather-panel {
-            padding: 28px;
-        }
-
-        .weather-main {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .weather-icon-container {
-            width: 90px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--glass);
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            position: relative;
-        }
-
-        .weather-icon {
-            font-size: 48px;
-            animation: weatherFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes weatherFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-6px) rotate(5deg); }
-        }
-
-        .weather-info {
-            flex: 1;
-        }
-
-        .weather-temp {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-        }
-
-        .temp-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 44px;
-            font-weight: 300;
-            line-height: 1;
-        }
-
-        .temp-unit {
-            font-size: 18px;
-            color: var(--text-dim);
-        }
-
-        .temp-convert {
-            font-size: 13px;
-            color: var(--text-dim);
-            margin-top: 4px;
-        }
-
-        .weather-condition {
-            font-size: 15px;
-            color: var(--secondary);
-            margin-top: 8px;
-        }
-
-        .weather-location {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 12px;
-            padding: 10px 14px;
-            background: var(--glass);
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .weather-location:hover {
-            border-color: var(--primary);
-        }
-
-        .location-icon {
-            font-size: 14px;
-        }
-
-        .location-text {
-            flex: 1;
-            font-size: 13px;
-            color: var(--text-dim);
-        }
-
-        .location-edit {
-            font-size: 12px;
-            color: var(--primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .weather-location:hover .location-edit {
-            opacity: 1;
-        }
-
-        .weather-controls {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .weather-btn {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 12px;
-            color: var(--text-dim);
-            font-family: 'Outfit', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .weather-btn:hover {
-            background: var(--glass-hover);
-            color: var(--text);
-            border-color: var(--glass-border-hover);
-        }
-
-        .weather-btn.active {
-            background: var(--primary);
-            color: var(--bg);
-            border-color: var(--primary);
-        }
-
-        /* To-Do List */
-        .todo-panel {
+        /* Ambient */
+        .ambient-btns {
             display: flex;
             flex-direction: column;
-            min-height: 520px;
-            max-height: calc(100vh - 100px);
-        }
-
-        .todo-input-wrapper {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .todo-input {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px 20px;
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .todo-input::placeholder {
-            color: var(--text-dim);
-        }
-
-        .todo-input:focus {
-            border-color: var(--primary);
-            box-shadow: 
-                0 0 0 3px rgba(201, 168, 255, 0.1),
-                0 8px 32px rgba(201, 168, 255, 0.15);
-        }
-
-        .todo-category-select {
-            width: 120px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            outline: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .todo-category-select:focus {
-            border-color: var(--primary);
-        }
-
-        .todo-category-select option {
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .todo-add-btn {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(201, 168, 255, 0.3);
-        }
-
-        .todo-add-btn:hover {
-            transform: scale(1.08) rotate(90deg);
-            box-shadow: 0 8px 32px rgba(201, 168, 255, 0.5);
-        }
-
-        .todo-add-btn:active {
-            transform: scale(0.95);
-        }
-
-        .todo-filters {
-            display: flex;
             gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .todo-filter-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 10px 20px;
-            color: var(--text-dim);
-            font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .todo-filter-btn:hover {
-            color: var(--text);
-            border-color: var(--glass-border-hover);
-        }
-
-        .todo-filter-btn.active {
-            background: var(--primary);
-            color: var(--bg);
-            border-color: var(--primary);
-            box-shadow: 0 4px 16px var(--primary-glow);
-        }
-
-        .todo-list-container {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-right: 8px;
-            min-height: 150px;
-        }
-
-        .todo-list-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .todo-list-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .todo-list-container::-webkit-scrollbar-thumb {
-            background: var(--glass-border);
-            border-radius: 2px;
-        }
-
-        .todo-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 18px 20px;
-            transition: all 0.3s ease;
-            animation: todoSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes todoSlideIn {
-            from { 
-                opacity: 0; 
-                transform: translateX(-20px) scale(0.95); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateX(0) scale(1); 
-            }
-        }
-
-        .todo-item:hover {
-            border-color: var(--glass-border-hover);
-            background: var(--glass-hover);
-            transform: translateX(4px);
-        }
-
-        .todo-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--glass-border-hover);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .todo-checkbox::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--success) 0%, #4f9 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .todo-checkbox.checked::before {
-            opacity: 1;
-        }
-
-        .todo-checkbox.checked {
-            border-color: var(--success);
-        }
-
-        .todo-checkbox.checked::after {
-            content: '✓';
-            position: relative;
-            z-index: 1;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .todo-checkbox:hover {
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-
-        .todo-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .todo-text {
-            font-size: 15px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
-
-        .todo-item.completed .todo-text {
-            text-decoration: line-through;
-            color: var(--text-dim);
-            opacity: 0.6;
-        }
-
-        .todo-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 6px;
-        }
-
-        .todo-category {
-            font-size: 10px;
-            padding: 5px 12px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .todo-category.work { 
-            background: rgba(92, 168, 255, 0.2); 
-            color: var(--accent-blue); 
-        }
-        .todo-category.personal { 
-            background: rgba(255, 107, 157, 0.2); 
-            color: var(--accent-pink); 
-        }
-        .todo-category.urgent { 
-            background: rgba(255, 107, 107, 0.2); 
-            color: var(--danger); 
-        }
-
-        .todo-delete-btn {
-            width: 32px;
-            height: 32px;
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-size: 18px;
-            opacity: 0;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .todo-item:hover .todo-delete-btn {
-            opacity: 1;
-        }
-
-        .todo-delete-btn:hover {
-            color: var(--danger);
-            background: rgba(255, 107, 107, 0.1);
-        }
-
-        .todo-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .todo-count-text {
-            font-size: 13px;
-            color: var(--text-dim);
-        }
-
-        .todo-clear-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 10px 18px;
-            color: var(--text-dim);
-            font-family: 'Outfit', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .todo-clear-btn:hover {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-        }
-
-        .manage-tags-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: var(--text-dim);
-            font-family: 'Outfit', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .manage-tags-btn:hover {
-            background: var(--primary);
-            color: var(--bg);
-        }
-
-        .settings-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 6px 10px;
-            color: var(--text-dim);
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .settings-btn:hover {
-            background: var(--primary);
-            color: var(--bg);
-        }
-
-        /* Notes Panel */
-        .notes-panel {
-            display: flex;
-            flex-direction: column;
-            min-height: 300px;
-            flex: 1;
-        }
-
-        .notes-textarea {
-            flex: 1;
-            min-height: 180px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 20px;
-            color: var(--text);
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 14px;
-            line-height: 1.7;
-            resize: none;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .notes-textarea::placeholder {
-            color: var(--text-dim);
-        }
-
-        .notes-textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 
-                0 0 0 3px rgba(201, 168, 255, 0.1),
-                0 8px 32px rgba(201, 168, 255, 0.15);
-        }
-
-        .notes-status {
-            font-size: 11px;
-            color: var(--text-dim);
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .notes-status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: statusPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Controls */
-        .ambient-panel {
-            padding: 24px;
-        }
-
-        .ambient-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
         }
 
         .ambient-btn {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px 20px;
+            border-radius: 12px;
+            padding: 14px 16px;
             color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -806,28 +231,22 @@
         .ambient-btn:hover {
             background: var(--glass-hover);
             border-color: var(--glass-border-hover);
-            transform: translateX(4px);
         }
 
         .ambient-btn.active {
-            background: linear-gradient(135deg, rgba(201, 168, 255, 0.15) 0%, rgba(255, 107, 157, 0.15) 100%);
+            background: linear-gradient(135deg, rgba(201, 168, 255, 0.12) 0%, rgba(255, 107, 157, 0.12) 100%);
             border-color: var(--primary);
-            box-shadow: 0 0 24px rgba(201, 168, 255, 0.2);
         }
 
-        .ambient-icon {
-            font-size: 22px;
-        }
+        .ambient-icon { font-size: 18px; }
 
-        .ambient-label {
-            flex: 1;
-        }
+        .ambient-label { flex: 1; }
 
         .ambient-toggle {
-            width: 44px;
-            height: 24px;
+            width: 40px;
+            height: 22px;
             background: var(--glass);
-            border-radius: 12px;
+            border-radius: 11px;
             position: relative;
             transition: all 0.3s ease;
         }
@@ -837,8 +256,8 @@
             position: absolute;
             top: 3px;
             left: 3px;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: var(--text-dim);
             border-radius: 50%;
             transition: all 0.3s ease;
@@ -849,35 +268,24 @@
         }
 
         .ambient-btn.active .ambient-toggle::after {
-            left: 23px;
+            left: 21px;
             background: white;
         }
 
-        .planner-panel {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .planner-nav-row {
+        /* Planner */
+        .planner-nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            gap: 12px;
-        }
-
-        .planner-current-date {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text);
+            margin-bottom: 12px;
         }
 
         .planner-arrow {
+            width: 30px;
+            height: 30px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
-            width: 32px;
-            height: 32px;
             color: var(--text-dim);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -888,47 +296,50 @@
             color: var(--text);
         }
 
-        .planner-list {
+        .planner-date-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .planner-items {
             flex: 1;
             overflow-y: auto;
-            max-height: 200px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            padding-right: 4px;
+            max-height: 180px;
         }
 
         .planner-item {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             padding: 10px 12px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 10px;
-            transition: all 0.3s ease;
         }
 
         .planner-item:hover {
             border-color: var(--glass-border-hover);
         }
 
-        .planner-time-col {
+        .planner-time {
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--primary);
-            min-width: 55px;
+            min-width: 50px;
         }
 
-        .planner-task-col {
+        .planner-text {
             flex: 1;
-            font-size: 13px;
+            font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .planner-remove {
+        .planner-x {
             background: none;
             border: none;
             color: var(--text-dim);
@@ -936,138 +347,359 @@
             font-size: 14px;
             opacity: 0;
             transition: all 0.3s ease;
-            width: 24px;
-            height: 24px;
+        }
+
+        .planner-item:hover .planner-x { opacity: 1; }
+        .planner-x:hover { color: var(--danger); }
+
+        .planner-add {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
+            gap: 6px;
+            margin-top: 10px;
         }
 
-        .planner-item:hover .planner-remove {
-            opacity: 1;
-        }
-
-        .planner-remove:hover {
-            color: var(--danger);
-            background: rgba(255,107,107,0.1);
-        }
-
-        .planner-add-row {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .plan-time {
-            width: 85px;
+        .plan-time-input, .plan-text-input {
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
             padding: 8px 10px;
             color: var(--text);
-            font-family: 'IBM Plex Mono', monospace;
             font-size: 12px;
             outline: none;
         }
 
-        .plan-time:focus, .plan-task:focus {
+        .plan-time-input {
+            width: 80px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .plan-text-input { flex: 1; }
+
+        .plan-time-input:focus, .plan-text-input:focus {
             border-color: var(--primary);
         }
 
-        .plan-task {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .plan-add-button {
-            width: 36px;
+        .plan-add-btn {
+            width: 34px;
             background: var(--primary);
             border: none;
             border-radius: 8px;
             color: var(--bg);
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .plan-add-button:hover {
-            transform: scale(1.05);
-        }
-
-        /* Settings */
-        .settings-option {
-            margin-bottom: 20px;
-        }
-
-        .settings-label {
-            font-size: 12px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .theme-swatch {
-            aspect-ratio: 1;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .theme-swatch:hover {
-            transform: scale(1.1);
-        }
-
-        .theme-swatch.active {
-            border-color: var(--text);
-        }
-
-        .font-selector {
+        /* Tasks */
+        .task-input-row {
             display: flex;
             gap: 8px;
+            margin-bottom: 14px;
         }
 
-        .font-option {
+        .task-input {
             flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .task-input::placeholder { color: var(--text-dim); }
+        .task-input:focus { border-color: var(--primary); }
+
+        .task-cat {
+            width: 90px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            color: var(--text);
+            font-size: 12px;
+            outline: none;
+        }
+
+        .task-cat option { background: var(--bg); }
+
+        .task-add-btn {
+            width: 46px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .task-add-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .task-filters {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .task-filter-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 8px 14px;
             color: var(--text-dim);
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .font-option:hover, .font-option.active {
+        .task-filter-btn:hover { color: var(--text); }
+
+        .task-filter-btn.active {
             background: var(--primary);
             color: var(--bg);
         }
 
-        /* Rain Effect */
+        .task-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 150px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            border-color: var(--glass-border-hover);
+        }
+
+        .task-check {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--glass-border-hover);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .task-check.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .task-check.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .task-item.done .task-text {
+            text-decoration: line-through;
+            color: var(--text-dim);
+            opacity: 0.6;
+        }
+
+        .task-cat-tag {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .task-cat-tag.work { background: rgba(92,168,255,0.2); color: var(--accent-blue); }
+        .task-cat-tag.personal { background: rgba(255,107,157,0.2); color: var(--accent-pink); }
+        .task-cat-tag.urgent { background: rgba(255,107,107,0.2); color: var(--danger); }
+
+        .task-del {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0;
+        }
+
+        .task-item:hover .task-del { opacity: 1; }
+        .task-del:hover { color: var(--danger); }
+
+        .task-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .task-count { font-size: 12px; color: var(--text-dim); }
+
+        .task-clear {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-dim);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .task-clear:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Weather */
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .weather-icon-wrap {
+            width: 80px;
+            height: 80px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .weather-icon { font-size: 42px; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+        .weather-details { flex: 1; }
+
+        .weather-temp {
+            font-size: 38px;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .weather-temp-f {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-left: 4px;
+        }
+
+        .weather-con {
+            font-size: 14px;
+            color: var(--secondary);
+            margin-top: 4px;
+        }
+
+        .weather-loc {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .weather-loc:hover { border-color: var(--primary); }
+
+        .loc-text { font-size: 12px; color: var(--text-dim); flex: 1; }
+        .loc-change { font-size: 11px; color: var(--primary); }
+
+        .weather-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .weather-btn {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--text-dim);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .weather-btn:hover {
+            background: var(--glass-hover);
+            color: var(--text);
+        }
+
+        .weather-btn.active {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        /* Notes */
+        .notes-area {
+            flex: 1;
+            min-height: 150px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 14px;
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .notes-area::placeholder { color: var(--text-dim); }
+        .notes-area:focus { border-color: var(--primary); }
+
+        .notes-status {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        /* Rain */
         .rain-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             pointer-events: none;
-            z-index: 0;
+            z-index: -1;
             overflow: hidden;
         }
 
@@ -1075,560 +707,393 @@
             position: absolute;
             width: 2px;
             background: linear-gradient(to bottom, transparent, var(--rain));
-            border-radius: 2px;
-            animation: rainFall linear infinite;
+            animation: rain linear infinite;
             opacity: 0;
         }
 
-        @keyframes rainFall {
-            0% {
-                transform: translateY(-100vh);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
+        @keyframes rain {
+            0% { transform: translateY(-100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
         }
 
-        /* Floating particles */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0.15;
-            animation: particleFloat 15s ease-in-out infinite;
-        }
-
-        @keyframes particleFloat {
-            0%, 100% { 
-                transform: translateY(0) translateX(0); 
-                opacity: 0.15;
-            }
-            25% { 
-                transform: translateY(-100px) translateX(50px); 
-                opacity: 0.3;
-            }
-            50% { 
-                transform: translateY(-200px) translateX(-30px); 
-                opacity: 0.15;
-            }
-            75% { 
-                transform: translateY(-300px) translateX(40px); 
-                opacity: 0.3;
-            }
-        }
-
-        /* Audio */
-        audio {
-            display: none;
-        }
-
-        /* Theme variations */
-        body.sunny {
-            --bg: #1a1610;
-            --bg-alt: #241c12;
-            --glass: rgba(255, 179, 71, 0.05);
-            --glass-hover: rgba(255, 179, 71, 0.1);
-            --glass-border: rgba(255, 179, 71, 0.15);
-            --glass-border-hover: rgba(255, 204, 51, 0.25);
-            --primary: #ffb347;
-            --primary-glow: rgba(255, 179, 71, 0.4);
-            --secondary: #ffcc33;
-            --text: #fff5e6;
-            --rain: rgba(255, 204, 51, 0.2);
-        }
-
-        body.cloudy {
-            --bg: #1a1a24;
-            --bg-alt: #222230;
-            --glass: rgba(122, 122, 140, 0.05);
-            --glass-hover: rgba(122, 122, 140, 0.1);
-            --glass-border: rgba(122, 122, 140, 0.15);
-            --glass-border-hover: rgba(122, 122, 140, 0.25);
-            --primary: #9a9aac;
-            --primary-glow: rgba(154, 154, 172, 0.3);
-            --secondary: #7a7a8c;
-            --rain: rgba(154, 154, 172, 0.15);
-        }
-
-        body.night {
-            --bg: #08080f;
-            --bg-alt: #0c0c18;
-            --glass: rgba(45, 27, 105, 0.08);
-            --glass-hover: rgba(45, 27, 105, 0.15);
-            --glass-border: rgba(139, 92, 246, 0.2);
-            --glass-border-hover: rgba(139, 92, 246, 0.35);
-            --primary: #a78bfa;
-            --primary-glow: rgba(167, 139, 250, 0.4);
-            --secondary: #8b5cf6;
-            --rain: rgba(139, 92, 246, 0.2);
-        }
-
-        /* Empty state */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        .empty-icon {
-            font-size: 52px;
-            margin-bottom: 16px;
-            opacity: 0.4;
-            animation: emptyBounce 2s ease-in-out infinite;
-        }
-
-        @keyframes emptyBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .empty-text {
-            font-size: 15px;
-            color: var(--text-dim);
-        }
-
-        /* Location modal */
-        .location-modal {
+        /* Modals */
+        .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 100;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
         }
 
-        .location-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal.active { opacity: 1; visibility: visible; }
 
-        .location-modal-content {
+        .modal-content {
             background: var(--bg);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 24px;
             width: 90%;
             max-width: 400px;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
         }
 
-        .location-modal.active .location-modal-content {
-            transform: scale(1);
-        }
-
-        .location-modal-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 20px;
+        .modal-title {
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        .location-modal-input {
+        .modal-input {
             width: 100%;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 12px 14px;
             color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
-        .location-modal-input:focus {
-            border-color: var(--primary);
-        }
+        .modal-input:focus { border-color: var(--primary); }
 
-        .location-modal-buttons {
+        .modal-btns {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .location-modal-btn {
+        .modal-btn {
             flex: 1;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 14px;
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-dim);
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .location-modal-btn:hover {
-            background: var(--glass-hover);
-        }
+        .modal-btn:hover { background: var(--glass-hover); }
 
-        .location-modal-btn.primary {
+        .modal-btn.primary {
             background: var(--primary);
             color: var(--bg);
-            border-color: var(--primary);
         }
 
-        .location-modal-btn.primary:hover {
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        .tags-list {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 16px;
-        }
+        /* Tags */
+        .tags-list { max-height: 150px; overflow-y: auto; margin-bottom: 12px; }
 
         .tag-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 14px;
+            padding: 10px 12px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            margin-bottom: 6px;
         }
 
         .tag-name {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-size: 13px;
         }
 
-        .tag-color-dot {
-            width: 12px;
-            height: 12px;
+        .tag-color {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
 
-        .tag-delete {
+        .tag-x {
             background: none;
             border: none;
             color: var(--text-dim);
             cursor: pointer;
-            font-size: 16px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
         }
 
-        .tag-delete:hover {
-            color: var(--danger);
-            background: rgba(255, 107, 107, 0.1);
-        }
+        .tag-x:hover { color: var(--danger); }
 
-        .add-tag-wrapper {
+        .add-tag-row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
-        .add-tag-wrapper input[type="color"] {
+        .add-tag-row input[type="color"] {
             width: 44px;
             height: 44px;
             border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Settings */
+        .settings-option { margin-bottom: 18px; }
+
+        .settings-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .theme-box {
+            aspect-ratio: 1;
             border-radius: 10px;
             cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-box:hover { transform: scale(1.1); }
+        .theme-box.active { border-color: var(--text); }
+
+        /* Empty */
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            opacity: 0.4;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        /* Shortcuts */
+        .shortcuts-list {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 16px;
+            padding: 12px;
             background: var(--glass);
+            border-radius: 10px;
         }
 
-        .add-tag-wrapper .location-modal-input {
-            flex: 1;
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
         }
 
-        .add-tag-wrapper .location-modal-btn {
-            width: auto;
-            padding: 12px 20px;
+        .shortcut kbd {
+            background: var(--glass);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
         }
 
-        /* Responsive */
+        /* Resp */
         @media (max-width: 1100px) {
-            .dashboard {
-                grid-template-columns: 280px 1fr;
-            }
-            .right-sidebar {
-                grid-column: span 2;
-                grid-row: 1;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 24px;
-            }
+            .dashboard { grid-template-columns: 1fr; }
+            .left-sidebar, .right-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 16px;
-            }
-            
-            .dashboard {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .panel {
-                padding: 20px;
-            }
-
-            .clock-display {
-                font-size: 42px;
-            }
-
-            .todo-panel, .notes-panel {
-                min-height: auto;
-                max-height: none;
-            }
-
-            .weather-main {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .weather-icon-container {
-                width: 80px;
-                height: 80px;
-            }
-
-            .temp-value {
-                font-size: 36px;
-            }
-
-            .right-sidebar {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 600px) {
+            .dashboard { gap: 16px; }
+            .panel { padding: 16px; border-radius: 16px; }
+            .left-sidebar, .right-sidebar { grid-template-columns: 1fr; }
+            .clock-display { font-size: 36px; }
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
     <div class="rain-container" id="rainContainer"></div>
 
     <div class="container">
-        <div class="dashboard">
-            <!-- Left Sidebar -->
-            <div class="left-sidebar">
-                <div class="panel clock-panel">
+        <div class="dashboard" id="dashboard">
+            <!-- Left Column -->
+            <div class="left-col">
+                <div class="panel" id="clockPanel">
                     <div class="panel-header">
                         <div class="panel-title">Time</div>
-                        <button class="settings-btn" id="settingsBtn">⚙</button>
+                        <button class="panel-action" id="settingsBtn">⚙</button>
                     </div>
-                    <div class="clock-main">
-                        <div class="clock-display">
-                            <span id="clockHour">00</span>:<span id="clockMin">00</span><span class="clock-seconds" id="clockSec">:00</span>
-                        </div>
-                        <div class="clock-date" id="clockDate"></div>
-                        <div class="clock-greeting" id="greeting"></div>
+                    <div class="clock-display">
+                        <span id="clockH">00</span>:<span id="clockM">00</span><span class="clock-seconds" id="clockS">:00</span>
                     </div>
-                    <div class="clock-controls">
-                        <button class="clock-format-btn active" data-format="12">12h</button>
-                        <button class="clock-format-btn" data-format="24">24h</button>
-                        <button class="clock-format-btn" data-format="jp">JP</button>
+                    <div class="clock-date" id="clockDate"></div>
+                    <div class="clock-greeting" id="greeting"></div>
+                    <div class="clock-formats">
+                        <button class="clock-format-btn" data-f="12">12h</button>
+                        <button class="clock-format-btn" data-f="24">24h</button>
+                        <button class="clock-format-btn" data-f="jp">JP</button>
                     </div>
                 </div>
 
-                <div class="panel ambient-panel">
+                <div class="panel" id="ambientPanel">
                     <div class="panel-header">
                         <div class="panel-title">Ambient</div>
                     </div>
-                    <div class="ambient-controls">
+                    <div class="ambient-btns">
                         <button class="ambient-btn" id="rainToggle">
                             <span class="ambient-icon">🌧️</span>
-                            <span class="ambient-label">Rain Effect</span>
+                            <span class="ambient-label">Rain</span>
                             <span class="ambient-toggle"></span>
                         </button>
-                        <button class="ambient-btn" id="audioToggle">
-                            <span class="ambient-icon">🎵</span>
-                            <span class="ambient-label">Ambient Sound</span>
+                        <button class="ambient-btn" id="soundToggle">
+                            <span class="ambient-icon">🔊</span>
+                            <span class="ambient-label">Sound</span>
                             <span class="ambient-toggle"></span>
                         </button>
                         <button class="ambient-btn" id="glowToggle">
                             <span class="ambient-icon">✨</span>
-                            <span class="ambient-label">Glow Effects</span>
+                            <span class="ambient-label">Glow</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="lightToggle">
+                            <span class="ambient-icon">☀️</span>
+                            <span class="ambient-label">Light Mode</span>
                             <span class="ambient-toggle"></span>
                         </button>
                     </div>
                 </div>
+
+                <div class="panel" id="plannerPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Planner</div>
+                        <button class="panel-action" id="addTagBtn">+ Tag</button>
+                    </div>
+                    <div class="planner-nav">
+                        <button class="planner-arrow" id="prevDay">←</button>
+                        <div class="planner-date-label" id="plannerDate"></div>
+                        <button class="planner-arrow" id="nextDay">→</button>
+                    </div>
+                    <div class="planner-items" id="plannerItems"></div>
+                    <div class="planner-add">
+                        <input type="time" class="plan-time-input" id="planTime">
+                        <input type="text" class="plan-text-input" id="planTask" placeholder="Add plan...">
+                        <button class="plan-add-btn" id="planAdd">+</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Planner -->
-            <div class="panel planner-panel">
-                <div class="panel-header">
-                    <div class="panel-title">Planner</div>
-                </div>
-                <div class="planner-nav-row">
-                    <button class="planner-arrow" id="prevDay">←</button>
-                    <div class="planner-current-date" id="plannerDateDisplay"></div>
-                    <button class="planner-arrow" id="nextDay">→</button>
-                </div>
-                <div class="planner-list" id="plannerList"></div>
-                <div class="planner-add-row">
-                    <input type="time" id="planTimeInput" class="plan-time">
-                    <input type="text" id="planTaskInput" class="plan-task" placeholder="Add plan...">
-                    <button class="plan-add-button" id="planAddButton">+</button>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="main-content">
-                <div class="panel todo-panel">
+            <!-- Main -->
+            <div class="main-col">
+                <div class="panel" id="tasksPanel">
                     <div class="panel-header">
                         <div class="panel-title">Tasks</div>
-                        <button class="manage-tags-btn" id="manageTagsBtn">+ Tag</button>
                     </div>
-                    <div class="todo-input-wrapper">
-                        <input type="text" class="todo-input" id="todoInput" placeholder="Add a new task...">
-                        <select class="todo-category-select" id="categorySelect">
+                    <div class="task-input-row">
+                        <input type="text" class="task-input" id="taskInput" placeholder="Add task...">
+                        <select class="task-cat" id="taskCat">
                             <option value="">Tag</option>
-                            <option value="work">Work</option>
-                            <option value="personal">Personal</option>
-                            <option value="urgent">Urgent</option>
                         </select>
-                        <button class="todo-add-btn" id="todoAddBtn">+</button>
+                        <button class="task-add-btn" id="taskAddBtn">+</button>
                     </div>
-                    <div class="todo-filters" id="todoFilters">
-                        <button class="todo-filter-btn active" data-filter="all">All</button>
+                    <div class="task-filters" id="taskFilters">
+                        <button class="task-filter-btn active" data-filter="all">All</button>
                     </div>
-                    <div class="todo-list-container" id="todoList"></div>
-                    <div class="todo-footer">
-                        <div class="todo-count-text" id="todoCount"></div>
-                        <button class="todo-clear-btn" id="clearCompletedBtn">Clear Completed</button>
+                    <div class="task-list" id="taskList"></div>
+                    <div class="task-foot">
+                        <div class="task-count" id="taskCount"></div>
+                        <button class="task-clear" id="clearDone">Clear</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Sidebar -->
-            <div class="right-sidebar">
-                <div class="panel weather-panel">
+            <!-- Right Column -->
+            <div class="right-col">
+                <div class="panel" id="weatherPanel">
                     <div class="panel-header">
                         <div class="panel-title">Weather</div>
                     </div>
                     <div class="weather-main">
-                        <div class="weather-icon-container">
+                        <div class="weather-icon-wrap">
                             <div class="weather-icon" id="weatherIcon">🌧️</div>
                         </div>
-                        <div class="weather-info">
+                        <div class="weather-details">
                             <div class="weather-temp">
-                                <span class="temp-value" id="tempC">--</span>
-                                <span class="temp-unit">°C</span>
+                                <span id="tempC">--</span>°C
+                                <span class="weather-temp-f" id="tempF">--°F</span>
                             </div>
-                            <div class="temp-convert">
-                                <span id="tempF">--</span>°F
-                            </div>
-                            <div class="weather-condition" id="weatherCondition">Loading...</div>
+                            <div class="weather-con" id="weatherCon">Loading...</div>
                         </div>
                     </div>
-                    <div class="weather-location" id="locationBtn">
-                        <span class="location-icon">📍</span>
-                        <span class="location-text" id="locationText">Detecting location...</span>
-                        <span class="location-edit">Change</span>
+                    <div class="weather-loc" id="locBtn">
+                        <span>📍</span>
+                        <span class="loc-text" id="locText">Locating...</span>
+                        <span class="loc-change">Change</span>
                     </div>
-                    <div class="weather-controls">
-                        <button class="weather-btn" id="autoLocationBtn">
-                            <span>📡</span> Auto Location
-                        </button>
-                        <button class="weather-btn" id="manualThemeBtn">
-                            <span>🎨</span> Manual
-                        </button>
+                    <div class="weather-btns">
+                        <button class="weather-btn" id="autoLocBtn">📡 Auto</button>
+                        <button class="weather-btn" id="manualBtn">🎨 Manual</button>
                     </div>
                 </div>
 
-                <div class="panel notes-panel">
+                <div class="panel" id="notesPanel">
                     <div class="panel-header">
-                        <div class="panel-title">Quick Notes</div>
+                        <div class="panel-title">Notes</div>
                     </div>
-                    <textarea class="notes-textarea" id="notesTextarea" placeholder="Write your thoughts, ideas, or anything you want to remember..."></textarea>
+                    <textarea class="notes-area" id="notesArea" placeholder="Write notes..."></textarea>
                     <div class="notes-status">
-                        <span class="notes-status-dot"></span>
-                        <span id="notesStatus">Auto-saved</span>
+                        <span class="status-dot"></span>
+                        <span id="notesStatus">Saved</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Manage Tags Modal -->
-    <div class="location-modal" id="tagsModal">
-        <div class="location-modal-content">
-            <div class="location-modal-title">Manage Tags</div>
-            <div class="tags-list" id="tagsList"></div>
-            <div class="add-tag-wrapper">
-                <input type="text" class="location-modal-input" id="newTagInput" placeholder="New tag name...">
-                <input type="color" id="newTagColor" value="#5ca8ff">
-                <button class="location-modal-btn primary" id="addTagBtn">Add</button>
-            </div>
-            <div class="location-modal-buttons">
-                <button class="location-modal-btn" id="tagsCloseBtn">Done</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Location Modal -->
-    <div class="location-modal" id="locationModal">
-        <div class="location-modal-content">
-            <div class="location-modal-title">Set Location</div>
-            <input type="text" class="location-modal-input" id="locationInput" placeholder="Enter city name (e.g., Tokyo, London)">
-            <div class="location-modal-buttons">
-                <button class="location-modal-btn" id="locationCancelBtn">Cancel</button>
-                <button class="location-modal-btn primary" id="locationSaveBtn">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div class="location-modal" id="settingsModal">
-        <div class="location-modal-content" style="max-width:420px">
-            <div class="location-modal-title">Customize</div>
-            
+    <!-- Modals -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-title">Settings</div>
             <div class="settings-option">
                 <div class="settings-label">Theme</div>
                 <div class="theme-grid" id="themeGrid"></div>
             </div>
-            
-            <div class="settings-option">
-                <div class="settings-label">Accent Color</div>
-                <input type="color" id="accentPicker" value="#c9a8ff" style="width:100%;height:40px;border-radius:10px;border:none;cursor:pointer">
+            <div class="modal-btns">
+                <button class="modal-btn primary" id="settingsDone">Done</button>
             </div>
-            
-            <div class="settings-option">
-                <div class="settings-label">Font</div>
-                <div class="font-selector">
-                    <button class="font-option" data-font="Outfit">Modern</button>
-                    <button class="font-option" data-font="IBM Plex Mono">Mono</button>
-                    <button class="font-option" data-font="Space Grotesk">Space</button>
-                </div>
+        </div>
+    </div>
+
+    <div class="modal" id="tagsModal">
+        <div class="modal-content">
+            <div class="modal-title">Tags</div>
+            <div class="tags-list" id="tagsList"></div>
+            <div class="add-tag-row">
+                <input type="color" id="tagColor" value="#5ca8ff">
+                <input type="text" class="modal-input" id="tagName" placeholder="Tag name...">
+                <button class="modal-btn primary" id="addTag">Add</button>
             </div>
-            
-            <div class="location-modal-buttons">
-                <button class="location-modal-btn primary" id="settingsDoneBtn">Done</button>
+            <div class="modal-btns">
+                <button class="modal-btn" id="tagsDone">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="locModal">
+        <div class="modal-content">
+            <div class="modal-title">Location</div>
+            <input type="text" class="modal-input" id="locInput" placeholder="City name...">
+            <div class="modal-btns">
+                <button class="modal-btn" id="locCancel">Cancel</button>
+                <button class="modal-btn primary" id="locSave">Save</button>
             </div>
         </div>
     </div>
@@ -1638,105 +1103,30 @@
     </audio>
 
     <script>
-        // State
-        let todos = JSON.parse(localStorage.getItem('todos')) || [];
-        let notes = localStorage.getItem('notes') || '';
-        let customTags = JSON.parse(localStorage.getItem('customTags')) || [
-            { name: 'work', color: '#5ca8ff' },
-            { name: 'personal', color: '#ff6b9d' },
-            { name: 'urgent', color: '#ff6b6b' }
-        ];
-        let currentFilter = 'all';
-        let rainEnabled = localStorage.getItem('rainEnabled') === 'true';
-        let audioEnabled = localStorage.getItem('audioEnabled') === 'true';
-        let glowEnabled = localStorage.getItem('glowEnabled') === 'true';
-        let manualTheme = localStorage.getItem('manualTheme') === 'true';
-        let clockFormat = localStorage.getItem('clockFormat') || '12';
-        let dateFormat = localStorage.getItem('dateFormat') || 'en';
-        let manualLocation = localStorage.getItem('manualLocation') || '';
+        // Data
+        let data = {
+            todos: JSON.parse(localStorage.getItem('todos')) || [],
+            notes: localStorage.getItem('notes') || '',
+            tags: JSON.parse(localStorage.getItem('tags')) || [
+                { name: 'work', color: '#5ca8ff' },
+                { name: 'personal', color: '#ff6b9d' },
+                { name: 'urgent', color: '#ff6b6b' }
+            ],
+            planner: JSON.parse(localStorage.getItem('planner')) || {},
+            filter: 'all',
+            clock: localStorage.getItem('clock') || '12',
+            light: localStorage.getItem('lightMode') === 'true',
+            rain: localStorage.getItem('rain') === 'true',
+            sound: localStorage.getItem('sound') === 'true',
+            glow: localStorage.getItem('glow') === 'true',
+            theme: localStorage.getItem('theme') || 'rainy',
+            font: localStorage.getItem('font') || 'Outfit'
+        };
 
-        // Planner state
-        let plannerData = JSON.parse(localStorage.getItem('plannerData')) || {};
         let currentPlannerDate = new Date().toISOString().split('T')[0];
+        let weather = { temp: 15, con: 'rainy', lat: 35.0116, lon: 135.7681, name: 'Kyoto, JP' };
 
-        // Weather state
-        let weatherLocation = {
-            lat: 35.0116,
-            lon: 135.7681,
-            name: 'Kyoto, JP'
-        };
-
-        let currentWeather = {
-            temp: 15,
-            condition: 'rainy'
-        };
-
-        // Planner
-        function renderPlanner() {
-            const container = document.getElementById('plannerList');
-            const d = new Date(currentPlannerDate);
-            document.getElementById('plannerDateDisplay').textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-            
-            const plans = plannerData[currentPlannerDate] || [];
-            
-            if (plans.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-text">No plans</div></div>';
-            } else {
-                container.innerHTML = plans.sort((a, b) => a.time.localeCompare(b.time)).map((plan, i) => `
-                    <div class="planner-item">
-                        <div class="planner-time-col">${plan.time}</div>
-                        <div class="planner-task-col">${escapeHtml(plan.task)}</div>
-                        <button class="planner-remove" data-index="${i}">×</button>
-                    </div>
-                `).join('');
-                
-                container.querySelectorAll('.planner-remove').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const idx = parseInt(btn.dataset.index);
-                        plannerData[currentPlannerDate].splice(idx, 1);
-                        localStorage.setItem('plannerData', JSON.stringify(plannerData));
-                        renderPlanner();
-                    });
-                });
-            }
-        }
-
-        function addPlan() {
-            const time = document.getElementById('planTimeInput').value;
-            const task = document.getElementById('planTaskInput').value.trim();
-            if (!time || !task) return;
-            
-            if (!plannerData[currentPlannerDate]) plannerData[currentPlannerDate] = [];
-            plannerData[currentPlannerDate].push({ time: time, task: task });
-            localStorage.setItem('plannerData', JSON.stringify(plannerData));
-            
-            document.getElementById('planTimeInput').value = '';
-            document.getElementById('planTaskInput').value = '';
-            renderPlanner();
-        }
-
-        document.getElementById('prevDay').addEventListener('click', () => {
-            const d = new Date(currentPlannerDate);
-            d.setDate(d.getDate() - 1);
-            currentPlannerDate = d.toISOString().split('T')[0];
-            renderPlanner();
-        });
-
-        document.getElementById('nextDay').addEventListener('click', () => {
-            const d = new Date(currentPlannerDate);
-            d.setDate(d.getDate() + 1);
-            currentPlannerDate = d.toISOString().split('T')[0];
-            renderPlanner();
-        });
-
-        document.getElementById('planAddButton').addEventListener('click', addPlan);
-        document.getElementById('planTaskInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addPlan();
-        });
-
-        renderPlanner();
-
-        // Settings
+        // Themes
         const themes = [
             { name: 'rainy', bg: '#0f0f1a', primary: '#c9a8ff' },
             { name: 'sunny', bg: '#1a1610', primary: '#ffb347' },
@@ -1748,601 +1138,475 @@
             { name: 'midnight', bg: '#0a0a1a', primary: '#6366f1' }
         ];
 
-        let currentTheme = localStorage.getItem('currentTheme') || 'rainy';
-        let currentFont = localStorage.getItem('currentFont') || 'Outfit';
+        // Save
+        function save() {
+            localStorage.setItem('todos', JSON.stringify(data.todos));
+            localStorage.setItem('notes', data.notes);
+            localStorage.setItem('tags', JSON.stringify(data.tags));
+            localStorage.setItem('planner', JSON.stringify(data.planner));
+            localStorage.setItem('filter', data.filter);
+            localStorage.setItem('clock', data.clock);
+            localStorage.setItem('lightMode', data.light);
+            localStorage.setItem('rain', data.rain);
+            localStorage.setItem('sound', data.sound);
+            localStorage.setItem('glow', data.glow);
+            localStorage.setItem('theme', data.theme);
+            localStorage.setItem('font', data.font);
+        }
 
-        function applyTheme(themeName) {
-            const theme = themes.find(t => t.name === themeName) || themes[0];
-            const root = document.documentElement;
-            root.style.setProperty('--bg', theme.bg);
-            root.style.setProperty('--primary', theme.primary);
-            root.style.setProperty('--primary-glow', theme.primary + '66');
-            currentTheme = themeName;
-            localStorage.setItem('currentTheme', themeName);
+        // Cross-tab sync
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'todos') data.todos = JSON.parse(e.newValue);
+            else if (e.key === 'notes') data.notes = e.newValue;
+            else if (e.key === 'tags') data.tags = JSON.parse(e.newValue);
+            else if (e.key === 'planner') data.planner = JSON.parse(e.newValue);
+            else if (e.key === 'lightMode') data.light = e.newValue === 'true';
+            else if (e.key === 'theme') data.theme = e.newValue;
+            else if (e.key === 'font') data.font = e.newValue;
+            else if (e.key === 'clock') data.clock = e.newValue;
+            else if (e.key === 'rain') data.rain = e.newValue === 'true';
+            else if (e.key === 'sound') data.sound = e.newValue === 'true';
+            else if (e.key === 'glow') data.glow = e.newValue === 'true';
             
-            document.querySelectorAll('.theme-swatch').forEach(s => {
-                s.classList.toggle('active', s.dataset.theme === themeName);
-            });
-        }
-
-        function renderThemeGrid() {
-            const grid = document.getElementById('themeGrid');
-            grid.innerHTML = themes.map(t => `
-                <div class="theme-swatch ${t.name === currentTheme ? 'active' : ''}" 
-                     style="background:${t.bg};border:3px solid ${t.primary}"
-                     data-theme="${t.name}" title="${t.name}"></div>
-            `).join('');
-            
-            grid.querySelectorAll('.theme-swatch').forEach(s => {
-                s.addEventListener('click', () => applyTheme(s.dataset.theme));
-            });
-        }
-
-        document.getElementById('accentPicker').addEventListener('input', (e) => {
-            document.documentElement.style.setProperty('--primary', e.target.value);
-            document.documentElement.style.setProperty('--primary-glow', e.target.value + '66');
+            refreshUI();
         });
 
-        document.querySelectorAll('.font-option').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.font-option').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFont = btn.dataset.font;
-                localStorage.setItem('currentFont', currentFont);
-                document.body.style.fontFamily = currentFont === 'IBM Plex Mono' ? "'IBM Plex Mono', sans-serif" : 
-                                               currentFont === 'Space Grotesk' ? "'Space Grotesk', sans-serif" : "'Outfit', sans-serif";
-            });
-        });
-
-        document.getElementById('settingsBtn').addEventListener('click', () => {
-            renderThemeGrid();
-            document.querySelectorAll('.font-option').forEach(b => {
-                b.classList.toggle('active', b.dataset.font === currentFont);
-            });
-            document.getElementById('settingsModal').classList.add('active');
-        });
-
-        document.getElementById('settingsDoneBtn').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.remove('active');
-        });
-
-        document.getElementById('settingsModal').addEventListener('click', (e) => {
-            if (e.target.id === 'settingsModal') {
-                document.getElementById('settingsModal').classList.remove('active');
-            }
-        });
-
-        // Tag management
-        function saveTags() {
-            localStorage.setItem('customTags', JSON.stringify(customTags));
-        }
-
-        function renderTagsList() {
-            const tagsList = document.getElementById('tagsList');
-            tagsList.innerHTML = customTags.map((tag, index) => `
-                <div class="tag-item">
-                    <div class="tag-name">
-                        <span class="tag-color-dot" style="background: ${tag.color}"></span>
-                        ${escapeHtml(tag.name)}
-                    </div>
-                    <button class="tag-delete" data-index="${index}">×</button>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.tag-delete').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    customTags.splice(parseInt(btn.dataset.index), 1);
-                    saveTags();
-                    renderTagsList();
-                    updateCategorySelect();
-                });
-            });
-        }
-
-        function updateCategorySelect() {
-            const select = document.getElementById('categorySelect');
-            select.innerHTML = '<option value="">Tag</option>' +
-                customTags.map(tag => `<option value="${tag.name}">${tag.name}</option>`).join('');
-        }
-
-        function addTag() {
-            const input = document.getElementById('newTagInput');
-            const colorPicker = document.getElementById('newTagColor');
-            const name = input.value.trim().toLowerCase();
-            if (!name) return;
-            if (customTags.some(t => t.name === name)) return;
-            customTags.push({ name, color: colorPicker.value });
-            input.value = '';
-            saveTags();
-            renderTagsList();
-            updateCategorySelect();
-        }
-
-        document.getElementById('manageTagsBtn').addEventListener('click', () => {
-            renderTagsList();
-            document.getElementById('tagsModal').classList.add('active');
-        });
-        document.getElementById('tagsCloseBtn').addEventListener('click', () => {
-            document.getElementById('tagsModal').classList.remove('active');
-        });
-        document.getElementById('addTagBtn').addEventListener('click', addTag);
-        document.getElementById('newTagInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addTag();
-        });
-
-        // Initialize particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            container.innerHTML = '';
-            if (!glowEnabled) return;
-
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-                container.appendChild(particle);
-            }
+        function refreshUI() {
+            renderTodos();
+            renderFilters();
+            renderPlanner();
+            applyTheme(data.theme);
+            applyLight();
+            renderTags();
+            updateCat();
         }
 
         // Clock
-        let clockInterval;
         function updateClock() {
             const now = new Date();
-            const hour24 = now.getHours();
-            const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
-
-            let hour12 = hour24 % 12;
-            if (hour12 === 0) hour12 = 12;
-
-            let displayHour = clockFormat === '12' ? hour12 : (clockFormat === '24' ? hour24 : hour24);
+            let h = now.getHours();
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
             
-            document.getElementById('clockHour').textContent = String(displayHour).padStart(2, '0');
-            document.getElementById('clockMin').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('clockSec').textContent = ':' + String(seconds).padStart(2, '0');
-
-            // Date
-            let dateStr;
-            if (dateFormat === 'jp') {
-                const jpFormats = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-                dateStr = now.toLocaleDateString('ja-JP', jpFormats);
-            } else {
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                dateStr = now.toLocaleDateString('en-US', options);
-            }
-            document.getElementById('clockDate').textContent = dateStr;
-
-            // Greeting
-            let greeting = 'Good night';
-            if (hour24 >= 5 && hour24 < 12) greeting = 'Good morning';
-            else if (hour24 >= 12 && hour24 < 17) greeting = 'Good afternoon';
-            else if (hour24 >= 17 && hour24 < 21) greeting = 'Good evening';
-            document.getElementById('greeting').textContent = greeting;
+            if (data.clock === '12') h = h % 12 || 12;
+            else if (data.clock === 'jp') h = now.getHours();
+            
+            document.getElementById('clockH').textContent = String(h).padStart(2, '0');
+            document.getElementById('clockM').textContent = m;
+            document.getElementById('clockS').textContent = ':' + s;
+            
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { 
+                weekday: 'long', month: 'long', day: 'numeric' 
+            });
+            
+            let g = 'Night';
+            if (now.getHours() >= 5 && now.getHours() < 12) g = 'Morning';
+            else if (now.getHours() >= 12 && now.getHours() < 17) g = 'Afternoon';
+            else if (now.getHours() >= 17 && now.getHours() < 21) g = 'Evening';
+            document.getElementById('greeting').textContent = 'Good ' + g;
         }
 
         document.querySelectorAll('.clock-format-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.clock-format-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                if (btn.dataset.format === 'jp') {
-                    clockFormat = '24';
-                    dateFormat = 'jp';
-                } else {
-                    clockFormat = btn.dataset.format;
-                    dateFormat = 'en';
-                }
-                localStorage.setItem('clockFormat', clockFormat);
-                localStorage.setItem('dateFormat', dateFormat);
+                data.clock = btn.dataset.f;
+                save();
                 updateClock();
             });
         });
 
-        // Format button states
-        updateClock();
-        document.querySelectorAll('.clock-format-btn').forEach(btn => {
-            if (btn.dataset.format === '12') btn.classList.add('active');
-        });
         setInterval(updateClock, 1000);
-
-        // Geolocation
-        function getAutoLocation() {
-            if (!navigator.geolocation) {
-                fetchWeather(weatherLocation.lat, weatherLocation.lon);
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    
-                    weatherLocation.lat = lat;
-                    weatherLocation.lon = lon;
-                    weatherLocation.name = 'Current Location';
-                    
-                    try {
-                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                        const data = await response.json();
-                        if (data.address) {
-                            const city = data.address.city || data.address.town || data.address.village || data.address.county;
-                            const country = data.address.country_code?.toUpperCase();
-                            weatherLocation.name = city ? `${city}, ${country}` : 'Current Location';
-                        }
-                    } catch (e) {
-                        console.log('Reverse geocode failed');
-                    }
-                    
-                    document.getElementById('locationText').textContent = weatherLocation.name;
-                    fetchWeather(lat, lon);
-                },
-                (error) => {
-                    console.log('Geolocation error:', error.message);
-                    document.getElementById('locationText').textContent = weatherLocation.name;
-                    fetchWeather(weatherLocation.lat, weatherLocation.lon);
-                }
-            );
-        }
+        updateClock();
+        document.querySelector('.clock-format-btn[data-f="' + data.clock + '"]')?.classList.add('active');
 
         // Weather
-        async function fetchWeather(lat, lon) {
+        async function fetchWeather() {
             try {
-                const response = await fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
-                );
-                const data = await response.json();
-
-                if (data.current_weather) {
-                    currentWeather.temp = data.current_weather.temperature;
-                    const code = data.current_weather.weathercode;
-                    const isDay = data.current_weather.is_day !== 0;
-
-                    if (code === 0) {
-                        currentWeather.condition = isDay ? 'sunny' : 'clear';
-                    } else if (code >= 1 && code <= 3) {
-                        currentWeather.condition = 'cloudy';
-                    } else if (code >= 51 && code <= 67 || code >= 80 && code <= 82) {
-                        currentWeather.condition = 'rainy';
-                    } else if (code >= 71 && code <= 77) {
-                        currentWeather.condition = 'snowy';
-                    } else {
-                        currentWeather.condition = 'rainy';
-                    }
-
-                    updateWeatherDisplay();
-                    if (!manualTheme) applyWeatherTheme();
-                }
-            } catch (error) {
-                console.log('Weather fetch failed:', error);
-            }
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?lat=${weather.lat}&lon=${weather.lon}&current_weather=true`);
+                const d = await res.json();
+                weather.temp = d.current_weather.temperature;
+                weather.con = d.current_weather.weathercode <= 3 ? 'cloudy' : 
+                           d.current_weather.weathercode <= 48 ? 'rainy' : 'rainy';
+                document.getElementById('tempC').textContent = Math.round(weather.temp);
+                document.getElementById('tempF').textContent = Math.round(weather.temp * 9/5 + 32) + '°F';
+                document.getElementById('weatherCon').textContent = weather.con.charAt(0).toUpperCase() + weather.con.slice(1);
+                document.getElementById('weatherIcon').textContent = weather.con === 'rainy' ? '🌧️' : '☀️';
+                if (!localStorage.getItem('manualTheme')) applyTheme(weather.con === 'rainy' ? 'rainy' : 'cloudy');
+            } catch (e) { console.log(e); }
         }
 
-        function updateWeatherDisplay() {
-            const tempC = Math.round(currentWeather.temp);
-            const tempF = Math.round(tempC * 9/5 + 32);
-
-            document.getElementById('tempC').textContent = tempC;
-            document.getElementById('tempF').textContent = tempF;
-
-            const icons = {
-                sunny: '☀️',
-                cloudy: '☁️',
-                rainy: '🌧️',
-                clear: '🌙',
-                snowy: '❄️'
-            };
-            document.getElementById('weatherIcon').textContent = icons[currentWeather.condition] || '🌧️';
-
-            const conditions = {
-                sunny: 'Sunny',
-                cloudy: 'Cloudy',
-                rainy: 'Rainy',
-                clear: 'Clear',
-                snowy: 'Snowy'
-            };
-            document.getElementById('weatherCondition').textContent = conditions[currentWeather.condition] || 'Unknown';
-        }
-
-        function applyWeatherTheme() {
-            document.body.className = '';
-            
-            if (currentWeather.condition === 'sunny') {
-                document.body.classList.add('sunny');
-            } else if (currentWeather.condition === 'cloudy') {
-                document.body.classList.add('cloudy');
-            } else if (currentWeather.condition === 'clear' || currentWeather.condition === 'night') {
-                document.body.classList.add('night');
-            } else if (currentWeather.condition === 'snowy') {
-                document.body.classList.add('cloudy');
-            }
-        }
-
-        // Auto location on load
-        getAutoLocation();
-
-        // Manual location
-        const locationModal = document.getElementById('locationModal');
-        const locationInput = document.getElementById('locationInput');
-
-        document.getElementById('locationBtn').addEventListener('click', () => {
-            locationInput.value = manualLocation || '';
-            locationModal.classList.add('active');
-            locationInput.focus();
-        });
-
-        document.getElementById('locationCancelBtn').addEventListener('click', () => {
-            locationModal.classList.remove('active');
-        });
-
-        document.getElementById('locationSaveBtn').addEventListener('click', async () => {
-            const city = locationInput.value.trim();
-            if (!city) {
-                locationModal.classList.remove('active');
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
-                const data = await response.json();
-                
-                if (data && data.length > 0) {
-                    weatherLocation.lat = parseFloat(data[0].lat);
-                    weatherLocation.lon = parseFloat(data[0].lon);
-                    weatherLocation.name = data[0].display_name.split(',').slice(0, 2).join(',');
-                    
-                    manualLocation = data[0].display_name;
-                    localStorage.setItem('manualLocation', manualLocation);
-                    
-                    document.getElementById('locationText').textContent = weatherLocation.name;
-                    fetchWeather(weatherLocation.lat, weatherLocation.lon);
-                }
-            } catch (error) {
-                console.log('Location search failed');
-            }
-
-            locationModal.classList.remove('active');
-        });
-
-        document.getElementById('autoLocationBtn').addEventListener('click', getAutoLocation);
-
-        document.getElementById('manualThemeBtn').addEventListener('click', () => {
-            manualTheme = !manualTheme;
-            localStorage.setItem('manualTheme', manualTheme);
-            document.getElementById('manualThemeBtn').classList.toggle('active', manualTheme);
-            
-            if (!manualTheme) {
-                applyWeatherTheme();
-            }
-        });
-
-        // To-Do List
-        function getTagColor(tagName) {
-            const tag = customTags.find(t => t.name === tagName);
-            return tag ? tag.color : '#888';
-        }
-
-        function renderTodos() {
-            const todoList = document.getElementById('todoList');
-            
-            let filtered = todos;
-            if (currentFilter !== 'all') {
-                filtered = todos.filter(t => t.category === currentFilter);
-            }
-
-            if (filtered.length === 0) {
-                todoList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📝</div>
-                        <div class="empty-text">No tasks yet. Add one above!</div>
-                    </div>
-                `;
-            } else {
-                todoList.innerHTML = filtered.map((todo, index) => {
-                    const tagColor = getTagColor(todo.category);
-                    return `
-                        <div class="todo-item ${todo.completed ? 'completed' : ''}">
-                            <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" data-index="${index}"></div>
-                            <div class="todo-content">
-                                <div class="todo-text">${escapeHtml(todo.text)}</div>
-                                ${todo.category ? `<div class="todo-meta"><span class="todo-category" style="background: ${tagColor}20; color: ${tagColor}">${todo.category}</span></div>` : ''}
-                            </div>
-                            <button class="todo-delete-btn" data-index="${index}">×</button>
-                        </div>
-                    `;
-                }).join('');
-
-                // Add event listeners
-                document.querySelectorAll('.todo-checkbox').forEach(cb => {
-                    cb.addEventListener('click', () => toggleTodo(parseInt(cb.dataset.index)));
-                });
-                document.querySelectorAll('.todo-delete-btn').forEach(btn => {
-                    btn.addEventListener('click', () => deleteTodo(parseInt(btn.dataset.index)));
-                });
-            }
-
-            const activeCount = todos.filter(t => !t.completed).length;
-            document.getElementById('todoCount').textContent = `${activeCount} of ${todos.length} tasks remaining`;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function addTodo() {
-            const input = document.getElementById('todoInput');
-            const category = document.getElementById('categorySelect').value;
-            const text = input.value.trim();
-
-            if (!text) return;
-
-            todos.push({
-                text,
-                completed: false,
-                category: category || ''
+        function getLoc() {
+            navigator.geolocation.getCurrentPosition(async (p) => {
+                weather.lat = p.coords.latitude;
+                weather.lon = p.coords.longitude;
+                weather.name = 'Current';
+                document.getElementById('locText').textContent = 'Current Location';
+                fetchWeather();
+            }, () => {
+                document.getElementById('locText').textContent = weather.name;
+                fetchWeather();
             });
-
-            input.value = '';
-            document.getElementById('categorySelect').value = '';
-            saveTodos();
-            renderTodos();
         }
 
-        function toggleTodo(index) {
-            let filtered = currentFilter === 'all' ? todos : todos.filter(t => t.category === currentFilter);
-            const todo = filtered[index];
-            const realIndex = todos.indexOf(todo);
-            
-            if (realIndex !== -1) {
-                todos[realIndex].completed = !todos[realIndex].completed;
-                saveTodos();
-                renderTodos();
-            }
-        }
-
-        function deleteTodo(index) {
-            let filtered = currentFilter === 'all' ? todos : todos.filter(t => t.category === currentFilter);
-            const todo = filtered[index];
-            const realIndex = todos.indexOf(todo);
-            
-            if (realIndex !== -1) {
-                todos.splice(realIndex, 1);
-                saveTodos();
-                renderTodos();
-            }
-        }
-
-        function saveTodos() {
-            localStorage.setItem('todos', JSON.stringify(todos));
-        }
-
-        document.getElementById('todoAddBtn').addEventListener('click', addTodo);
-        document.getElementById('todoInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addTodo();
+        document.getElementById('autoLocBtn').addEventListener('click', getLoc);
+        document.getElementById('locBtn').addEventListener('click', () => {
+            document.getElementById('locInput').value = '';
+            document.getElementById('locModal').classList.add('active');
         });
+        document.getElementById('locCancel').addEventListener('click', () => document.getElementById('locModal').classList.remove('active'));
+        document.getElementById('locSave').addEventListener('click', async () => {
+            const city = document.getElementById('locInput').value;
+            if (city) {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`);
+                const d = await res.json();
+                if (d.length) {
+                    weather.lat = parseFloat(d[0].lat);
+                    weather.lon = parseFloat(d[0].lon);
+                    weather.name = d[0].display_name.split(',')[0];
+                }
+            }
+            document.getElementById('locModal').classList.remove('active');
+            document.getElementById('locText').textContent = weather.name;
+            fetchWeather();
+        });
+
+        getLoc();
+
+        // Planner
+        function renderPlanner() {
+            const d = new Date(currentPlannerDate);
+            document.getElementById('plannerDate').textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            
+            const plans = data.planner[currentPlannerDate] || [];
+            const list = document.getElementById('plannerItems');
+            
+            if (!plans.length) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-text">No plans</div></div>';
+            } else {
+                list.innerHTML = plans.sort((a, b) => a.time.localeCompare(b.time)).map((p, i) => `
+                    <div class="planner-item">
+                        <div class="planner-time">${p.time}</div>
+                        <div class="planner-text">${p.task}</div>
+                        <button class="planner-x" data-i="${i}">×</button>
+                    </div>
+                `).join('');
+                list.querySelectorAll('.planner-x').forEach(b => {
+                    b.addEventListener('click', () => {
+                        data.planner[currentPlannerDate].splice(b.dataset.i, 1);
+                        save();
+                        renderPlanner();
+                    });
+                });
+            }
+        }
+
+        document.getElementById('prevDay').addEventListener('click', () => {
+            const d = new Date(currentPlannerDate);
+            d.setDate(d.getDate() - 1);
+            currentPlannerDate = d.toISOString().split('T')[0];
+            renderPlanner();
+        });
+        document.getElementById('nextDay').addEventListener('click', () => {
+            const d = new Date(currentPlannerDate);
+            d.setDate(d.getDate() + 1);
+            currentPlannerDate = d.toISOString().split('T')[0];
+            renderPlanner();
+        });
+        document.getElementById('planAdd').addEventListener('click', () => {
+            const time = document.getElementById('planTime').value;
+            const task = document.getElementById('planTask').value.trim();
+            if (!time || !task) return;
+            if (!data.planner[currentPlannerDate]) data.planner[currentPlannerDate] = [];
+            data.planner[currentPlannerDate].push({ time, task });
+            save();
+            document.getElementById('planTime').value = '';
+            document.getElementById('planTask').value = '';
+            renderPlanner();
+        });
+        document.getElementById('planTask').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('planAdd').click();
+        });
+
+        renderPlanner();
+
+        // Tasks
+        function updateCat() {
+            document.getElementById('taskCat').innerHTML = '<option value="">Tag</option>' +
+                data.tags.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+        }
 
         function renderFilters() {
-            const filtersContainer = document.getElementById('todoFilters');
-            filtersContainer.innerHTML = '<button class="todo-filter-btn active" data-filter="all">All</button>' +
-                customTags.map(tag => `
-                    <button class="todo-filter-btn" data-filter="${tag.name}">${tag.name}</button>
-                `).join('');
+            document.getElementById('taskFilters').innerHTML = '<button class="task-filter-btn active" data-filter="all">All</button>' +
+                data.tags.map(t => `<button class="task-filter-btn" data-filter="${t.name}">${t.name}</button>`).join('');
             
-            document.querySelectorAll('.todo-filter-btn').forEach(btn => {
+            document.querySelectorAll('.task-filter-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    document.querySelectorAll('.todo-filter-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.task-filter-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
+                    data.filter = btn.dataset.filter;
+                    save();
                     renderTodos();
                 });
             });
+            
+            document.querySelector(`.task-filter-btn[data-filter="${data.filter}"]`)?.classList.add('active');
         }
 
-        renderFilters();
-        updateCategorySelect();
+        function getTagColor(name) {
+            return data.tags.find(t => t.name === name)?.color || '#888';
+        }
 
-        document.getElementById('clearCompletedBtn').addEventListener('click', () => {
-            todos = todos.filter(t => !t.completed);
-            saveTodos();
+        function renderTodos() {
+            let tasks = data.todos;
+            if (data.filter !== 'all') tasks = tasks.filter(t => t.cat === data.filter);
+            
+            const list = document.getElementById('taskList');
+            
+            if (!tasks.length) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">No tasks</div></div>';
+            } else {
+                list.innerHTML = tasks.map((t, i) => `
+                    <div class="task-item ${t.done ? 'done' : ''}">
+                        <div class="task-check ${t.done ? 'checked' : ''}" data-i="${i}"></div>
+                        <div class="task-text">${t.text}</div>
+                        ${t.cat ? `<span class="task-cat-tag" style="background:${getTagColor(t.cat)}20;color:${getTagColor(t.cat)}">${t.cat}</span>` : ''}
+                        <button class="task-del" data-i="${i}">×</button>
+                    </div>
+                `).join('');
+                
+                list.querySelectorAll('.task-check').forEach(b => {
+                    b.addEventListener('click', () => {
+                        data.todos.find(t => t.text === b.closest('.task-item').querySelector('.task-text').textContent).done = 
+                            !data.todos.find(t => t.text === b.closest('.task-item').querySelector('.task-text').textContent).done;
+                        save();
+                        renderTodos();
+                    });
+                });
+                
+                list.querySelectorAll('.task-del').forEach(b => {
+                    b.addEventListener('click', () => {
+                        data.todos.splice(b.dataset.i, 1);
+                        save();
+                        renderTodos();
+                    });
+                });
+            }
+            
+            const left = data.todos.filter(t => !t.done).length;
+            document.getElementById('taskCount').textContent = `${left} of ${data.todos.length} left`;
+        }
+
+        document.getElementById('taskAddBtn').addEventListener('click', () => {
+            const text = document.getElementById('taskInput').value.trim();
+            const cat = document.getElementById('taskCat').value;
+            if (!text) return;
+            data.todos.push({ text, done: false, cat });
+            save();
+            document.getElementById('taskInput').value = '';
+            document.getElementById('taskCat').value = '';
+            renderTodos();
+        });
+        document.getElementById('taskInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('taskAddBtn').click();
+        });
+        document.getElementById('clearDone').addEventListener('click', () => {
+            data.todos = data.todos.filter(t => !t.done);
+            save();
             renderTodos();
         });
 
         renderTodos();
+        renderFilters();
+        updateCat();
 
         // Notes
-        const notesTextarea = document.getElementById('notesTextarea');
-        notesTextarea.value = notes;
-
-        let notesTimeout;
-        notesTextarea.addEventListener('input', () => {
-            document.getElementById('notesStatus').textContent = 'Saving...';
+        const notesTimeout = document.getElementById('notesArea').addEventListener('input', () => {
+            document.getElementById('notesStatus').textContent = '...';
             clearTimeout(notesTimeout);
-            notesTimeout = setTimeout(() => {
-                notes = notesTextarea.value;
-                localStorage.setItem('notes', notes);
-                document.getElementById('notesStatus').textContent = 'Auto-saved';
-            }, 800);
+            setTimeout(() => {
+                data.notes = document.getElementById('notesArea').value;
+                save();
+                document.getElementById('notesStatus').textContent = 'Saved';
+            }, 500);
         });
+        document.getElementById('notesArea').value = data.notes;
 
-        // Rain Effect
-        function createRain() {
-            const container = document.getElementById('rainContainer');
-            container.innerHTML = '';
-
-            if (!rainEnabled) return;
-
-            const dropCount = 150;
-            for (let i = 0; i < dropCount; i++) {
-                const drop = document.createElement('div');
-                drop.className = 'raindrop';
-                drop.style.left = Math.random() * 100 + 'vw';
-                drop.style.height = Math.random() * 20 + 10 + 'px';
-                drop.style.animationDuration = Math.random() * 1 + 0.5 + 's';
-                drop.style.animationDelay = Math.random() * 3 + 's';
-                drop.style.opacity = Math.random() * 0.4 + 0.2;
-                container.appendChild(drop);
+        // Ambient
+        function applyRain() {
+            const con = document.getElementById('rainContainer');
+            con.innerHTML = '';
+            if (!data.rain) return;
+            for (let i = 0; i < 120; i++) {
+                const d = document.createElement('div');
+                d.className = 'raindrop';
+                d.style.left = Math.random() * 100 + 'vw';
+                d.style.height = Math.random() * 15 + 10 + 'px';
+                d.style.animationDuration = Math.random() * 1 + 0.5 + 's';
+                d.style.animationDelay = Math.random() * 3 + 's';
+                d.style.opacity = Math.random() * 0.4 + 0.2;
+                con.appendChild(d);
             }
         }
 
-        const rainToggle = document.getElementById('rainToggle');
-        rainToggle.classList.toggle('active', rainEnabled);
-        createRain();
-
-        rainToggle.addEventListener('click', () => {
-            rainEnabled = !rainEnabled;
-            localStorage.setItem('rainEnabled', rainEnabled);
-            rainToggle.classList.toggle('active', rainEnabled);
-            createRain();
+        document.getElementById('rainToggle').addEventListener('click', () => {
+            data.rain = !data.rain;
+            document.getElementById('rainToggle').classList.toggle('active', data.rain);
+            save();
+            applyRain();
         });
+        data.rain && document.getElementById('rainToggle').classList.add('active');
+        applyRain();
 
-        // Audio
-        const audio = document.getElementById('rainAudio');
-        const audioToggle = document.getElementById('audioToggle');
-
-        audioToggle.addEventListener('click', () => {
-            audioEnabled = !audioEnabled;
-            localStorage.setItem('audioEnabled', audioEnabled);
-            audioToggle.classList.toggle('active', audioEnabled);
-
-            if (audioEnabled) {
-                audio.volume = 0.3;
-                audio.play().catch(() => {});
+        document.getElementById('soundToggle').addEventListener('click', () => {
+            data.sound = !data.sound;
+            document.getElementById('soundToggle').classList.toggle('active', data.sound);
+            if (data.sound) {
+                document.getElementById('rainAudio').volume = 0.3;
+                document.getElementById('rainAudio').play().catch(() => {});
             } else {
-                audio.pause();
+                document.getElementById('rainAudio').pause();
             }
+            save();
         });
+        data.sound && document.getElementById('soundToggle').classList.add('active');
 
-        if (audioEnabled) {
-            audioToggle.classList.add('active');
+        document.getElementById('glowToggle').addEventListener('click', () => {
+            data.glow = !data.glow;
+            document.getElementById('glowToggle').classList.toggle('active', data.glow);
+            document.body.style.background = data.glow ? '' : 'var(--bg)';
+            save();
+        });
+        data.glow && document.getElementById('glowToggle').classList.add('active');
+
+        // Light mode
+        function applyLight() {
+            document.body.classList.toggle('light-mode', data.light);
+            document.getElementById('lightToggle').classList.toggle('active', data.light);
         }
 
-        // Glow
-        const glowToggle = document.getElementById('glowToggle');
-        glowToggle.classList.toggle('active', glowEnabled);
-        createParticles();
+        document.getElementById('lightToggle').addEventListener('click', () => {
+            data.light = !data.light;
+            applyLight();
+            save();
+        });
+        applyLight();
 
-        glowToggle.addEventListener('click', () => {
-            glowEnabled = !glowEnabled;
-            localStorage.setItem('glowEnabled', glowEnabled);
-            glowToggle.classList.toggle('active', glowEnabled);
-            createParticles();
+        // Theme
+        function applyTheme(name) {
+            const t = themes.find(th => th.name === name) || themes[0];
+            document.documentElement.style.setProperty('--bg', t.bg);
+            document.documentElement.style.setProperty('--primary', t.primary);
+            document.documentElement.style.setProperty('--primary-glow', t.primary + '66');
+            data.theme = name;
+            save();
+            
+            document.querySelectorAll('.theme-box').forEach(b => {
+                b.classList.toggle('active', b.dataset.theme === name);
+            });
+        }
+
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            document.getElementById('themeGrid').innerHTML = themes.map(t => `
+                <div class="theme-box ${t.name === data.theme ? 'active' : ''}" 
+                     style="background:${t.bg};border:3px solid ${t.primary}"
+                     data-theme="${t.name}"></div>
+            `).join('');
+            
+            document.querySelectorAll('.theme-box').forEach(b => {
+                b.addEventListener('click', () => applyTheme(b.dataset.theme));
+            });
+            
+            document.getElementById('settingsModal').classList.add('active');
+        });
+        document.getElementById('settingsDone').addEventListener('click', () => {
+            document.getElementById('settingsModal').classList.remove('active');
+        });
+        applyTheme(data.theme);
+
+        // Tags
+        function renderTags() {
+            document.getElementById('tagsList').innerHTML = data.tags.map((t, i) => `
+                <div class="tag-item">
+                    <div class="tag-name"><span class="tag-color" style="background:${t.color}"></span>${t.name}</div>
+                    <button class="tag-x" data-i="${i}">×</button>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.tag-x').forEach(b => {
+                b.addEventListener('click', () => {
+                    data.tags.splice(b.dataset.i, 1);
+                    save();
+                    renderTags();
+                    renderFilters();
+                    updateCat();
+                });
+            });
+        }
+
+        document.getElementById('addTagBtn').addEventListener('click', () => {
+            renderTags();
+            document.getElementById('tagsModal').classList.add('active');
+        });
+        document.getElementById('addTag').addEventListener('click', () => {
+            const name = document.getElementById('tagName').value.trim().toLowerCase();
+            if (!name || data.tags.some(t => t.name === name)) return;
+            data.tags.push({ name, color: document.getElementById('tagColor').value });
+            save();
+            document.getElementById('tagName').value = '';
+            renderTags();
+            renderFilters();
+            updateCat();
+        });
+        document.getElementById('tagName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('addTag').click();
+        });
+        document.getElementById('tagsDone').addEventListener('click', () => {
+            document.getElementById('tagsModal').classList.remove('active');
+        });
+        renderTags();
+
+        // Drag panels
+        const panels = document.querySelectorAll('.panel');
+        let draggedPanel = null;
+
+        panels.forEach(p => {
+            p.setAttribute('draggable', 'true');
+            p.addEventListener('dragstart', (e) => {
+                draggedPanel = p;
+                p.classList.add('dragging');
+            });
+            p.addEventListener('dragend', () => {
+                p.classList.remove('dragging');
+                draggedPanel = null;
+            });
+            p.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            p.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedPanel && draggedPanel !== p) {
+                    const dash = document.getElementById('dashboard');
+                    const rect = p.getBoundingClientRect();
+                    if (e.clientY < rect.top + rect.height / 2) {
+                        dash.insertBefore(draggedPanel, p);
+                    } else {
+                        dash.insertBefore(draggedPanel, p.nextSibling);
+                    }
+                }
+            });
         });
 
-        // Click outside modals
-        locationModal.addEventListener('click', (e) => {
-            if (e.target === locationModal) {
-                locationModal.classList.remove('active');
-            }
-        });
-
-        document.getElementById('tagsModal').addEventListener('click', (e) => {
-            if (e.target.id === 'tagsModal') {
-                document.getElementById('tagsModal').classList.remove('active');
-            }
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            if (e.key === 'n') document.getElementById('taskInput').focus();
+            if (e.key === 't') document.getElementById('planTask').focus();
+            if (e.key === 'r') document.getElementById('rainToggle').click();
+            if (e.key === 's') document.getElementById('soundToggle').click();
+            if (e.key === 'l') document.getElementById('lightToggle').click();
+            if (e.key === ',') document.getElementById('settingsBtn').click();
         });
     </script>
 </body>
