@@ -448,13 +448,13 @@
         }
 
         .pomodoro-setting input {
-            width: 32px;
+            width: 40px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 3px;
-            padding: 3px;
+            border-radius: 4px;
+            padding: 4px;
             color: var(--text);
-            font-size: 10px;
+            font-size: 11px;
             text-align: center;
         }
 
@@ -709,6 +709,58 @@
             100% { transform: translateY(100vh); opacity: 0; }
         }
 
+        /* Stars */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Snow */
+        .snowflake {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: snowfall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes snowfall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Fireflies */
+        .firefly {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffeb3b, 0 0 16px #ffeb3b;
+            animation: fireflyMove 8s ease-in-out infinite;
+        }
+
+        @keyframes fireflyMove {
+            0% { transform: translate(0, 0); opacity: 0; }
+            20% { opacity: 1; }
+            50% { transform: translate(100px, -50px); opacity: 1; }
+            80% { transform: translate(-50px, -100px); opacity: 0.5; }
+            100% { transform: translate(0, 0); opacity: 0; }
+        }
+
         /* Modals */
         .modal {
             position: fixed;
@@ -910,6 +962,21 @@
                             <span class="ambient-label">Light</span>
                             <span class="ambient-toggle"></span>
                         </button>
+                        <button class="ambient-btn" id="starToggle">
+                            <span class="ambient-icon">✨</span>
+                            <span class="ambient-label">Stars</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="snowToggle">
+                            <span class="ambient-icon">❄️</span>
+                            <span class="ambient-label">Snow</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="fireflyToggle">
+                            <span class="ambient-icon">🪲</span>
+                            <span class="ambient-label">Fireflies</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1099,6 +1166,9 @@
             light: localStorage.getItem('lightMode') === 'true',
             rain: localStorage.getItem('rain') === 'true',
             sound: localStorage.getItem('sound') === 'true',
+            stars: localStorage.getItem('stars') === 'true',
+            snow: localStorage.getItem('snow') === 'true',
+            fireflies: localStorage.getItem('fireflies') === 'true',
             theme: localStorage.getItem('theme') || 'rainy',
             selectedDate: new Date().toISOString().split('T')[0],
             events: JSON.parse(localStorage.getItem('events')) || []
@@ -1117,14 +1187,22 @@
         };
 
         const themes = [
-            { name: 'rainy', bg: '#0f0f1a', primary: '#c9a8ff' },
-            { name: 'sunny', bg: '#1a1610', primary: '#ffb347' },
-            { name: 'cloudy', bg: '#1a1a24', primary: '#9a9aac' },
-            { name: 'night', bg: '#08080f', primary: '#a78bfa' },
-            { name: 'ocean', bg: '#0a1628', primary: '#38bdf8' },
-            { name: 'forest', bg: '#0a1a0f', primary: '#4ade80' },
-            { name: 'rose', bg: '#1a0a14', primary: '#fb7185' },
-            { name: 'midnight', bg: '#0a0a1a', primary: '#6366f1' }
+            { name: 'rainy', bg: '#0f0f1a', primary: '#c9a8ff', secondary: '#8b7ec8' },
+            { name: 'sunny', bg: '#1a1610', primary: '#ffb347', secondary: '#ff8c00' },
+            { name: 'cloudy', bg: '#1a1a24', primary: '#9a9aac', secondary: '#707080' },
+            { name: 'night', bg: '#08080f', primary: '#a78bfa', secondary: '#c4b5fd' },
+            { name: 'ocean', bg: '#0a1628', primary: '#38bdf8', secondary: '#7dd3fc' },
+            { name: 'forest', bg: '#0a1a0f', primary: '#4ade80', secondary: '#86efac' },
+            { name: 'rose', bg: '#1a0a14', primary: '#fb7185', secondary: '#fda4af' },
+            { name: 'midnight', bg: '#0a0a1a', primary: '#6366f1', secondary: '#818cf8' },
+            { name: 'purple', bg: '#120a1a', primary: '#e879f9', secondary: '#f0abfc' },
+            { name: 'gold', bg: '#1a1408', primary: '#fbbf24', secondary: '#fcd34d' },
+            { name: 'coral', bg: '#1a0f0c', primary: '#fb923c', secondary: '#fdba74' },
+            { name: 'mint', bg: '#0a1510', primary: '#34d399', secondary: '#6ee7b7' },
+            { name: 'lavender', bg: '#14101a', primary: '#a78bfa', secondary: '#c4b5fd' },
+            { name: 'peach', bg: '#1a120e', primary: '#fdba74', secondary: '#fed7aa' },
+            { name: 'slate', bg: '#0f1115', primary: '#94a3b8', secondary: '#cbd5e1' },
+            { name: 'emerald', bg: '#071a14', primary: '#10b981', secondary: '#34d399' }
         ];
 
         function save() {
@@ -1137,6 +1215,9 @@
             localStorage.setItem('lightMode', data.light);
             localStorage.setItem('rain', data.rain);
             localStorage.setItem('sound', data.sound);
+            localStorage.setItem('stars', data.stars);
+            localStorage.setItem('snow', data.snow);
+            localStorage.setItem('fireflies', data.fireflies);
             localStorage.setItem('theme', data.theme);
             localStorage.setItem('selectedDate', data.selectedDate);
             localStorage.setItem('events', JSON.stringify(data.events));
@@ -1544,12 +1625,74 @@
         document.getElementById('lightToggle').addEventListener('click', () => { data.light = !data.light; applyLight(); save(); });
         applyLight();
 
+        // Stars
+        function applyStars() {
+            const con = document.getElementById('rainContainer');
+            if (!data.stars) {
+                Array.from(con.getElementsByClassName('star')).forEach(el => el.remove());
+                return;
+            }
+            for (let i = 0; i < 50; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + 'vw';
+                s.style.top = Math.random() * 50 + 'vh';
+                s.style.animationDelay = Math.random() * 2 + 's';
+                con.appendChild(s);
+            }
+        }
+        document.getElementById('starToggle').addEventListener('click', () => { data.stars = !data.stars; document.getElementById('starToggle').classList.toggle('active', data.stars); save(); applyStars(); });
+        if (data.stars) document.getElementById('starToggle').classList.add('active');
+        applyStars();
+
+        // Snow
+        function applySnow() {
+            const con = document.getElementById('rainContainer');
+            if (!data.snow) {
+                Array.from(con.getElementsByClassName('snowflake')).forEach(el => el.remove());
+                return;
+            }
+            for (let i = 0; i < 80; i++) {
+                const s = document.createElement('div');
+                s.className = 'snowflake';
+                s.style.left = Math.random() * 100 + 'vw';
+                s.style.animationDuration = Math.random() * 3 + 2 + 's';
+                s.style.animationDelay = Math.random() * 3 + 's';
+                s.style.opacity = Math.random() * 0.5 + 0.3;
+                con.appendChild(s);
+            }
+        }
+        document.getElementById('snowToggle').addEventListener('click', () => { data.snow = !data.snow; document.getElementById('snowToggle').classList.toggle('active', data.snow); save(); applySnow(); });
+        if (data.snow) document.getElementById('snowToggle').classList.add('active');
+        applySnow();
+
+        // Fireflies
+        function applyFireflies() {
+            const con = document.getElementById('rainContainer');
+            if (!data.fireflies) {
+                Array.from(con.getElementsByClassName('firefly')).forEach(el => el.remove());
+                return;
+            }
+            for (let i = 0; i < 15; i++) {
+                const f = document.createElement('div');
+                f.className = 'firefly';
+                f.style.left = Math.random() * 100 + 'vw';
+                f.style.top = Math.random() * 80 + 10 + '%';
+                f.style.animationDelay = Math.random() * 5 + 's';
+                con.appendChild(f);
+            }
+        }
+        document.getElementById('fireflyToggle').addEventListener('click', () => { data.fireflies = !data.fireflies; document.getElementById('fireflyToggle').classList.toggle('active', data.fireflies); save(); applyFireflies(); });
+        if (data.fireflies) document.getElementById('fireflyToggle').classList.add('active');
+        applyFireflies();
+
         // Theme
         function applyTheme(name) {
             const t = themes.find(th => th.name === name) || themes[0];
             document.documentElement.style.setProperty('--bg', t.bg);
             document.documentElement.style.setProperty('--primary', t.primary);
             document.documentElement.style.setProperty('--primary-glow', t.primary + '66');
+            document.documentElement.style.setProperty('--secondary', t.secondary || t.primary);
             data.theme = name;
             save();
             document.querySelectorAll('.theme-box').forEach(b => b.classList.toggle('active', b.dataset.theme === name));
