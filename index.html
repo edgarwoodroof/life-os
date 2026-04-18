@@ -911,7 +911,6 @@
                     <div class="clock-formats">
                         <button class="clock-format-btn" data-f="12">12h</button>
                         <button class="clock-format-btn" data-f="24">24h</button>
-                        <button class="clock-format-btn" data-f="jp">JP</button>
                     </div>
                 </div>
 
@@ -1251,7 +1250,6 @@
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             if (data.clock === '12') h = h % 12 || 12;
-            else if (data.clock === 'jp') h = now.getHours();
             document.getElementById('clockH').textContent = String(h).padStart(2, '0');
             document.getElementById('clockM').textContent = m;
             document.getElementById('clockS').textContent = ':' + s;
