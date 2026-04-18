@@ -1973,19 +1973,21 @@
         });
 
         // Auth init
-        if (auth.token) {
-            updateAuthUI();
-            if (!auth.gistId) {
-                await findGist();
-            }
-            if (auth.gistId) {
-                loadFromGist();
+        (async () => {
+            if (auth.token) {
+                updateAuthUI();
+                if (!auth.gistId) {
+                    await findGist();
+                }
+                if (auth.gistId) {
+                    loadFromGist();
+                } else {
+                    await syncGist();
+                }
             } else {
-                await syncGist();
+                updateAuthUI();
             }
-        } else {
-            updateAuthUI();
-        }
+        })();
 
         document.getElementById('syncBtn').addEventListener('click', async () => {
             await syncGist();
