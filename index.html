@@ -70,22 +70,22 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1.5fr 1fr;
-            gap: 20px;
+            grid-template-columns: 320px 1fr 300px;
+            gap: 16px;
         }
 
         .col-left, .col-main, .col-right {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
         }
 
         .panel {
             background: var(--glass);
             backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 14px;
             transition: all 0.3s ease;
         }
 
@@ -98,8 +98,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--glass-border);
         }
 
@@ -250,7 +250,7 @@
         .ambient-btn.active .ambient-toggle { background: var(--primary); }
         .ambient-btn.active .ambient-toggle::after { left: 18px; background: white; }
 
-        /* Calendar */
+/* Calendar */
         .calendar-nav {
             display: flex;
             align-items: center;
@@ -290,7 +290,7 @@
         }
 
         .calendar-day {
-            aspect-ratio: 1;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -307,100 +307,26 @@
         .calendar-day.selected { background: var(--primary); color: var(--bg); }
         .calendar-day.has-event { box-shadow: inset 0 0 0 2px var(--primary); }
 
-        /* Pomodoro */
-        .pomodoro-display {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .pomodoro-time {
-            font-size: 56px;
-            font-weight: 300;
-            color: var(--text);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .pomodoro-time.break { color: var(--accent-blue); }
-        .pomodoro-time.focus { color: var(--primary); }
-
-        .pomodoro-status {
-            font-size: 12px;
-            color: var(--text-dim);
-            margin-top: 8px;
-        }
-
-        .pomodoro-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .pomodoro-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 12px 20px;
-            color: var(--text);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .pomodoro-btn:hover { background: var(--glass-hover); }
-        .pomodoro-btn.primary { background: var(--primary); color: var(--bg); }
-
-        .pomodoro-settings {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .pomodoro-setting {
-            text-align: center;
-        }
-
-        .pomodoro-setting label {
-            font-size: 10px;
-            color: var(--text-dim);
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .pomodoro-setting input {
-            width: 40px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 4px;
-            padding: 4px;
-            color: var(--text);
-            font-size: 12px;
-            text-align: center;
-        }
-
         /* Links */
         .links-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 180px;
+            gap: 6px;
+            max-height: 100px;
             overflow-y: auto;
         }
 
         .link-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
+            gap: 8px;
+            padding: 8px 10px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
+            border-radius: 8px;
             text-decoration: none;
             color: var(--text);
-            font-size: 12px;
+            font-size: 11px;
             transition: all 0.2s ease;
         }
 
@@ -409,9 +335,7 @@
             border-color: var(--primary);
         }
 
-        .link-icon {
-            font-size: 16px;
-        }
+        .link-icon { font-size: 14px; }
 
         .link-name {
             flex: 1;
@@ -425,7 +349,7 @@
             border: none;
             color: var(--text-dim);
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0;
         }
 
@@ -434,31 +358,104 @@
 
         .link-input-row {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
         }
 
         .link-input {
-            flex: 1;
+            width: 100%;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 10px 12px;
+            border-radius: 6px;
+            padding: 8px 10px;
             color: var(--text);
-            font-size: 12px;
+            font-size: 11px;
             outline: none;
         }
 
         .link-input:focus { border-color: var(--primary); }
 
         .link-add-btn {
-            width: 36px;
+            width: 100%;
             background: var(--primary);
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             color: var(--bg);
-            font-size: 14px;
+            font-size: 12px;
+            padding: 8px;
             cursor: pointer;
+        }
+
+        /* Pomodoro */
+        .pomodoro-display {
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        .pomodoro-time {
+            font-size: 52px;
+            font-weight: 300;
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
+            line-height: 1;
+        }
+
+        .pomodoro-time.break { color: var(--accent-blue); }
+        .pomodoro-time.focus { color: var(--primary); }
+
+        .pomodoro-status {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .pomodoro-controls {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .pomodoro-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: var(--text);
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pomodoro-btn:hover { background: var(--glass-hover); }
+        .pomodoro-btn.primary { background: var(--primary); color: var(--bg); }
+
+        .pomodoro-settings {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .pomodoro-setting label {
+            font-size: 9px;
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .pomodoro-setting input {
+            width: 32px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 3px;
+            padding: 3px;
+            color: var(--text);
+            font-size: 10px;
+            text-align: center;
         }
 
         /* Tasks */
@@ -772,6 +769,23 @@
         /* Tags */
         .tags-list { max-height: 100px; overflow-y: auto; margin-bottom: 10px; }
 
+        .events-list { max-height: 100px; overflow-y: auto; margin-bottom: 10px; }
+
+        .event-item {
+            padding: 8px 12px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .event-item:hover { background: var(--glass-hover); }
+        .event-item.selected { border-color: var(--primary); background: var(--glass-hover); }
+
+        .add-event-row { margin-bottom: 10px; }
+
         .tag-item {
             display: flex;
             align-items: center;
@@ -828,7 +842,7 @@
 
     <div class="container">
         <div class="dashboard">
-            <div class="col-left">
+<div class="col-left">
                 <div class="panel" id="clockPanel">
                     <div class="panel-header">
                         <div class="panel-title">Time</div>
@@ -846,29 +860,6 @@
                         <button class="clock-format-btn" data-f="12">12h</button>
                         <button class="clock-format-btn" data-f="24">24h</button>
                         <button class="clock-format-btn" data-f="jp">JP</button>
-                    </div>
-                </div>
-
-                <div class="panel" id="ambientPanel">
-                    <div class="panel-header">
-                        <div class="panel-title">Ambient</div>
-                    </div>
-                    <div class="ambient-btns">
-                        <button class="ambient-btn active" id="rainToggle">
-                            <span class="ambient-icon">🌧️</span>
-                            <span class="ambient-label">Rain</span>
-                            <span class="ambient-toggle"></span>
-                        </button>
-                        <button class="ambient-btn" id="soundToggle">
-                            <span class="ambient-icon">🔊</span>
-                            <span class="ambient-label">Sound</span>
-                            <span class="ambient-toggle"></span>
-                        </button>
-                        <button class="ambient-btn" id="lightToggle">
-                            <span class="ambient-icon">☀️</span>
-                            <span class="ambient-label">Light</span>
-                            <span class="ambient-toggle"></span>
-                        </button>
                     </div>
                 </div>
 
@@ -898,42 +889,27 @@
                         <button class="weather-btn" id="manualBtn">🎨 Manual</button>
                     </div>
                 </div>
-            </div>
 
-                <div class="panel" id="calendarPanel">
+                <div class="panel" id="ambientPanel">
                     <div class="panel-header">
-                        <div class="panel-title">Calendar</div>
+                        <div class="panel-title">Ambient</div>
                     </div>
-                    <div class="calendar-nav">
-                        <button class="calendar-nav-btn" id="prevMonth">←</button>
-                        <div class="calendar-month" id="calendarMonth"></div>
-                        <button class="calendar-nav-btn" id="nextMonth">→</button>
-                    </div>
-                    <div class="calendar-grid" id="calendarGrid"></div>
-                </div>
-
-                <div class="panel" id="pomodoroPanel">
-                    <div class="panel-header">
-                        <div class="panel-title">Focus</div>
-                    </div>
-                    <div class="pomodoro-display">
-                        <div class="pomodoro-time" id="pomodoroTime">25:00</div>
-                        <div class="pomodoro-status" id="pomodoroStatus">Ready to focus</div>
-                    </div>
-                    <div class="pomodoro-controls">
-                        <button class="pomodoro-btn primary" id="pomodoroStart">Start</button>
-                        <button class="pomodoro-btn" id="pomodoroPause">Pause</button>
-                        <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
-                    </div>
-                    <div class="pomodoro-settings">
-                        <div class="pomodoro-setting">
-                            <label>Focus</label>
-                            <input type="number" id="focusTime" value="25" min="1" max="60">
-                        </div>
-                        <div class="pomodoro-setting">
-                            <label>Break</label>
-                            <input type="number" id="breakTime" value="5" min="1" max="30">
-                        </div>
+                    <div class="ambient-btns">
+                        <button class="ambient-btn active" id="rainToggle">
+                            <span class="ambient-icon">🌧️</span>
+                            <span class="ambient-label">Rain</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="soundToggle">
+                            <span class="ambient-icon">🔊</span>
+                            <span class="ambient-label">Sound</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
+                        <button class="ambient-btn" id="lightToggle">
+                            <span class="ambient-icon">☀️</span>
+                            <span class="ambient-label">Light</span>
+                            <span class="ambient-toggle"></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -963,6 +939,45 @@
                     </div>
                 </div>
 
+                <div class="panel" id="calendarPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Calendar</div>
+                    </div>
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" id="prevMonth">←</button>
+                        <div class="calendar-month" id="calendarMonth"></div>
+                        <button class="calendar-nav-btn" id="nextMonth">→</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+            </div>
+
+            <div class="col-right">
+                <div class="panel" id="pomodoroPanel">
+                    <div class="panel-header">
+                        <div class="panel-title">Focus</div>
+                    </div>
+                    <div class="pomodoro-display">
+                        <div class="pomodoro-time" id="pomodoroTime">25:00</div>
+                        <div class="pomodoro-status" id="pomodoroStatus">Ready to focus</div>
+                    </div>
+                    <div class="pomodoro-controls">
+                        <button class="pomodoro-btn primary" id="pomodoroStart">Start</button>
+                        <button class="pomodoro-btn" id="pomodoroPause">Pause</button>
+                        <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
+                    </div>
+                    <div class="pomodoro-settings">
+                        <div class="pomodoro-setting">
+                            <label>Focus</label>
+                            <input type="number" id="focusTime" value="25" min="1" max="60">
+                        </div>
+                        <div class="pomodoro-setting">
+                            <label>Break</label>
+                            <input type="number" id="breakTime" value="5" min="1" max="30">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="panel" id="notesPanel">
                     <div class="panel-header">
                         <div class="panel-title">Notes</div>
@@ -973,12 +988,8 @@
                         <span id="notesStatus">Saved</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-right">
-
-
-                <div class="panel" id="linksPanel">
+<div class="panel" id="linksPanel">
                     <div class="panel-header">
                         <div class="panel-title">Quick Links</div>
                     </div>
@@ -1051,6 +1062,23 @@
         </div>
     </div>
 
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-title">Events for <span id="eventDate"></span></div>
+            <div class="events-list" id="eventsList"></div>
+            <div class="add-event-row">
+                <input type="text" class="modal-input" id="eventTitle" placeholder="Event title...">
+            </div>
+            <div class="modal-btns">
+                <button class="modal-btn danger" id="deleteEventBtn">Delete</button>
+                <button class="modal-btn primary" id="addEventBtn">Add</button>
+            </div>
+            <div class="modal-btns" style="margin-top:8px">
+                <button class="modal-btn" id="eventDone">Done</button>
+            </div>
+        </div>
+    </div>
+
     <audio id="rainAudio" loop>
         <source src="https://cdn.pixabay.com/audio/2022/05/13/audio_257112d7b0.mp3" type="audio/mpeg">
     </audio>
@@ -1072,7 +1100,8 @@
             rain: localStorage.getItem('rain') === 'true',
             sound: localStorage.getItem('sound') === 'true',
             theme: localStorage.getItem('theme') || 'rainy',
-            selectedDate: new Date().toISOString().split('T')[0]
+            selectedDate: new Date().toISOString().split('T')[0],
+            events: JSON.parse(localStorage.getItem('events')) || []
         };
 
         let currentMonth = new Date();
@@ -1110,6 +1139,7 @@
             localStorage.setItem('sound', data.sound);
             localStorage.setItem('theme', data.theme);
             localStorage.setItem('selectedDate', data.selectedDate);
+            localStorage.setItem('events', JSON.stringify(data.events));
         }
 
         window.addEventListener('storage', (e) => {
@@ -1233,7 +1263,8 @@
                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i).toISOString().split('T')[0];
                 const isToday = date === today;
                 const isSelected = date === data.selectedDate;
-                html += `<div class="calendar-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}" data-date="${date}">${i}</div>`;
+                const hasEvent = data.events.some(e => e.date === date);
+                html += `<div class="calendar-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}${hasEvent ? ' has-event' : ''}" data-date="${date}">${i}</div>`;
             }
             const remaining = 42 - (firstDay + daysInMonth);
             for (let i = 1; i <= remaining; i++) html += `<div class="calendar-day other-month">${i}</div>`;
@@ -1243,9 +1274,69 @@
                     data.selectedDate = d.dataset.date;
                     save();
                     renderCalendar();
+                    openEventModal(d.dataset.date);
                 });
             });
         }
+
+        let selectedEventIndex = null;
+
+        function openEventModal(date) {
+            const parts = date.split('-');
+            const adjusted = new Date(parts[0], parts[1] - 1, parts[2]);
+            adjusted.setDate(adjusted.getDate() + 1);
+            document.getElementById('eventDate').textContent = adjusted.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            renderEventsList(date);
+            document.getElementById('eventModal').classList.add('active');
+            document.getElementById('eventTitle').value = '';
+            selectedEventIndex = null;
+        }
+
+        function renderEventsList(date) {
+            const list = document.getElementById('eventsList');
+            const events = data.events.filter(e => e.date === date);
+            if (events.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-text">No events</div></div>';
+            } else {
+                list.innerHTML = events.map((e, i) => `<div class="event-item" data-i="${i}">${e.title}</div>`).join('');
+                list.querySelectorAll('.event-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        list.querySelectorAll('.event-item').forEach(el => el.classList.remove('selected'));
+                        item.classList.add('selected');
+                        selectedEventIndex = parseInt(item.dataset.i);
+                        const filtered = data.events.filter(e => e.date === date);
+                        document.getElementById('eventTitle').value = filtered[selectedEventIndex]?.title || '';
+                    });
+                });
+            }
+        }
+
+        document.getElementById('addEventBtn').addEventListener('click', () => {
+            const title = document.getElementById('eventTitle').value.trim();
+            if (!title) return;
+            data.events.push({ date: data.selectedDate, title: title });
+            save();
+            renderCalendar();
+            renderEventsList(data.selectedDate);
+            document.getElementById('eventTitle').value = '';
+        });
+
+        document.getElementById('deleteEventBtn').addEventListener('click', () => {
+            if (selectedEventIndex === null) return;
+            const date = data.selectedDate;
+            const filtered = data.events.filter(e => e.date === date);
+            const eventToDelete = filtered[selectedEventIndex];
+            if (eventToDelete) {
+                data.events = data.events.filter(e => !(e.date === date && e.title === eventToDelete.title));
+                save();
+                renderCalendar();
+                renderEventsList(date);
+                selectedEventIndex = null;
+                document.getElementById('eventTitle').value = '';
+            }
+        });
+
+        document.getElementById('eventDone').addEventListener('click', () => document.getElementById('eventModal').classList.remove('active'));
 
         document.getElementById('prevMonth').addEventListener('click', () => { currentMonth.setMonth(currentMonth.getMonth() - 1); renderCalendar(); });
         document.getElementById('nextMonth').addEventListener('click', () => { currentMonth.setMonth(currentMonth.getMonth() + 1); renderCalendar(); });
