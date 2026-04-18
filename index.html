@@ -887,9 +887,56 @@
         @media (max-width: 700px) {
             .dashboard { grid-template-columns: 1fr; }
         }
+
+        .auth-panel {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            z-index: 50;
+        }
+
+        .auth-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .auth-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+        .auth-user {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .gist-status {
+            font-size: 10px;
+            color: var(--text-dim);
+            padding: 4px 8px;
+            background: var(--glass);
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
+    <div class="auth-panel" id="authPanel">
+        <div id="authContainer"></div>
+    </div>
     <div class="rain-container" id="rainContainer"></div>
 
     <div class="container">
@@ -900,6 +947,7 @@
                         <div class="panel-title">Time</div>
                         <div class="panel-actions">
                             <button class="panel-btn" id="settingsBtn">⚙</button>
+                            <button class="panel-btn" id="syncBtn" title="Sync to Gist">🔄</button>
                             <button class="panel-btn" id="backupBtn">💾</button>
                         </div>
                     </div>
@@ -1150,6 +1198,145 @@
     </audio>
 
     <script>
+        // === GITHUB OAUTH CONFIG ===
+        const GATEKEEPER_URL = 'https://gatekeeper-w0n8.onrender.com'; // Replace with your Gatekeeper URL
+        const GITHUB_CLIENT_ID = 'YOUR_GITHUB_CLIENT_ID'; // Replace with your client ID
+        const GIST_FILENAME = 'life-os-data.json';
+
+        const auth = {
+            token: localStorage.getItem('gh_token') || null,
+            user: JSON.parse(localStorage.getItem('gh_user') || 'null'),
+            gistId: localStorage.getItem('gh_gist') || null
+        };
+
+        async function authenticate(code) {
+            try {
+                const resp = await fetch(GATEKEEPER_URL + '/' + code);
+                const data = await resp.json();
+                if (data.token) {
+                    auth.token = data.token;
+                    localStorage.setItem('gh_token', data.token);
+                    await fetchUser();
+                    await syncGist();
+                }
+            } catch (e) { console.error('Auth error:', e); }
+        }
+
+        async function fetchUser() {
+            try {
+                const resp = await fetch('https://api.github.com/user', { headers: { Authorization: 'token ' + auth.token } });
+                auth.user = await resp.json();
+                localStorage.setItem('gh_user', JSON.stringify(auth.user));
+                updateAuthUI();
+            } catch (e) { console.error(e); }
+        }
+
+        async function getOrCreateGist() {
+            const resp = await fetch('https://api.github.com/gists', {
+                headers: { Authorization: 'token ' + auth.token },
+                method: 'POST',
+                body: JSON.stringify({
+                    description: 'Life OS Data',
+                    public: false,
+                    files: { [GIST_FILENAME]: { content: JSON.stringify(localData()) } }
+                })
+            });
+            const gist = await resp.json();
+            auth.gistId = gist.id;
+            localStorage.setItem('gh_gist', gist.id);
+            return gist;
+        }
+
+        async function syncGist() {
+            if (!auth.token || !auth.user) return;
+            if (!auth.gistId) {
+                await getOrCreateGist();
+            } else {
+                await fetch('https://api.github.com/gists/' + auth.gistId, {
+                    headers: { Authorization: 'token ' + auth.token },
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        files: { [GIST_FILENAME]: { content: JSON.stringify(localData()) } }
+                    })
+                });
+            }
+        }
+
+        async function loadFromGist() {
+            if (!auth.token || !auth.gistId) return;
+            try {
+                const resp = await fetch('https://api.github.com/gists/' + auth.gistId);
+                const gist = await resp.json();
+                const content = gist.files[GIST_FILENAME]?.content;
+                if (content) {
+                    const d = JSON.parse(content);
+                    if (d.todos) data.todos = d.todos;
+                    if (d.notes !== undefined) data.notes = d.notes;
+                    if (d.tags) data.tags = d.tags;
+                    if (d.links) data.links = d.links;
+                    if (d.events) data.events = d.events;
+                    save();
+                    refreshUI();
+                }
+            } catch (e) { console.error('Load error:', e); }
+        }
+
+        function localData() {
+            return {
+                todos: data.todos,
+                notes: data.notes,
+                tags: data.tags,
+                links: data.links,
+                filter: data.filter,
+                clock: data.clock,
+                light: data.light,
+                rain: data.rain,
+                sound: data.sound,
+                stars: data.stars,
+                snow: data.snow,
+                fireflies: data.fireflies,
+                theme: data.theme,
+                selectedDate: data.selectedDate,
+                events: data.events
+            };
+        }
+
+        function logout() {
+            auth.token = null;
+            auth.user = null;
+            auth.gistId = null;
+            localStorage.removeItem('gh_token');
+            localStorage.removeItem('gh_user');
+            localStorage.removeItem('gh_gist');
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            const panel = document.getElementById('authPanel');
+            const container = document.getElementById('authContainer');
+            if (!auth.token) {
+                panel.style.display = 'block';
+                container.innerHTML = '<button class="auth-btn" id="loginBtn">Sign in with GitHub</button>';
+            } else {
+                panel.style.display = 'flex';
+                container.innerHTML = '<img src="' + (auth.user?.avatar_url || '') + '" class="auth-avatar"><div class="auth-user">' + (auth.user?.login || '') + '</div><button class="auth-btn" id="logoutBtn">Sign out</button>';
+            }
+            document.getElementById('loginBtn')?.addEventListener('click', login);
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        }
+
+        function login() {
+            const redirect = encodeURIComponent(window.location.href);
+            window.location.href = 'https://github.com/login/oauth/authorize?client_id=' + GITHUB_CLIENT_ID + '&scope=gist&redirect_uri=' + redirect;
+        }
+
+        // Check for OAuth callback
+        if (window.location.href.match(/\?code=(.*)/)) {
+            const code = window.location.href.match(/\?code=(.*)/)[1];
+            window.history.replaceState(null, '', window.location.pathname);
+            authenticate(code);
+        }
+
         // Data
         let data = {
             todos: JSON.parse(localStorage.getItem('todos')) || [],
@@ -1220,6 +1407,7 @@
             localStorage.setItem('theme', data.theme);
             localStorage.setItem('selectedDate', data.selectedDate);
             localStorage.setItem('events', JSON.stringify(data.events));
+            if (auth.token) syncGist();
         }
 
         window.addEventListener('storage', (e) => {
@@ -1768,6 +1956,19 @@
             if (e.key === 's') document.getElementById('soundToggle').click();
             if (e.key === 'l') document.getElementById('lightToggle').click();
             if (e.key === ',') document.getElementById('settingsBtn').click();
+        });
+
+        // Auth init
+        if (auth.token) {
+            updateAuthUI();
+            loadFromGist();
+        } else {
+            updateAuthUI();
+        }
+
+        document.getElementById('syncBtn').addEventListener('click', async () => {
+            await syncGist();
+            alert('Synced to Gist!');
         });
     </script>
 </body>
