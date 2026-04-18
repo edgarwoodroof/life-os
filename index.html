@@ -1251,15 +1251,14 @@
             if (!auth.token || !auth.user) return;
             if (!auth.gistId) {
                 await getOrCreateGist();
-            } else {
-                await fetch('https://api.github.com/gists/' + auth.gistId, {
-                    headers: { Authorization: 'token ' + auth.token },
-                    method: 'PATCH',
-                    body: JSON.stringify({
-                        files: { [GIST_FILENAME]: { content: JSON.stringify(localData()) } }
-                    })
-                });
             }
+            await fetch('https://api.github.com/gists/' + auth.gistId, {
+                headers: { Authorization: 'token ' + auth.token },
+                method: 'PATCH',
+                body: JSON.stringify({
+                    files: { [GIST_FILENAME]: { content: JSON.stringify(localData()) } }
+                })
+            });
         }
 
         async function loadFromGist() {
@@ -1299,6 +1298,21 @@
                 selectedDate: data.selectedDate,
                 events: data.events
             };
+        }
+
+        async function findGist() {
+            if (!auth.token) return;
+            try {
+                const resp = await fetch('https://api.github.com/gists', {
+                    headers: { Authorization: 'token ' + auth.token }
+                });
+                const gists = await resp.json();
+                const existing = gists.find(g => g.files && g.files[GIST_FILENAME]);
+                if (existing) {
+                    auth.gistId = existing.id;
+                    localStorage.setItem('gh_gist', existing.id);
+                }
+            } catch (e) { console.error(e); }
         }
 
         function logout() {
@@ -1961,7 +1975,14 @@
         // Auth init
         if (auth.token) {
             updateAuthUI();
-            loadFromGist();
+            if (!auth.gistId) {
+                await findGist();
+            }
+            if (auth.gistId) {
+                loadFromGist();
+            } else {
+                await syncGist();
+            }
         } else {
             updateAuthUI();
         }
